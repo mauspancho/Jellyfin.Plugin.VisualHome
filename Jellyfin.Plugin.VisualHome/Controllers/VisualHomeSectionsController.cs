@@ -20,7 +20,8 @@ public sealed class VisualHomeSectionsController : ControllerBase
         new Dictionary<string, (string Resource, string ContentType)>(StringComparer.OrdinalIgnoreCase)
         {
             ["visualhome.js"] = ("Jellyfin.Plugin.VisualHome.Web.visualhome.js", "text/javascript; charset=utf-8"),
-            ["visualhome.css"] = ("Jellyfin.Plugin.VisualHome.Web.visualhome.css", "text/css; charset=utf-8")
+            ["visualhome.css"] = ("Jellyfin.Plugin.VisualHome.Web.visualhome.css", "text/css; charset=utf-8"),
+            ["visualhome-loader.user.js"] = ("Jellyfin.Plugin.VisualHome.Web.visualhome-loader.user.js", "text/javascript; charset=utf-8")
         };
 
     private readonly IUserManager _userManager;

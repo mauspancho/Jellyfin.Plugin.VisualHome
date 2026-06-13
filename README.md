@@ -73,6 +73,7 @@ El plugin sirve los assets en:
 ```text
 /VisualHome/assets/visualhome.css
 /VisualHome/assets/visualhome.js
+/VisualHome/assets/visualhome-loader.user.js
 ```
 
 CSS fallback no destructivo:
@@ -81,9 +82,17 @@ CSS fallback no destructivo:
 @import url("/VisualHome/assets/visualhome.css");
 ```
 
-JavaScript fallback:
+JavaScript fallback persistente:
 
-Jellyfin Web no garantiza una API estable para que un plugin de servidor inyecte JavaScript en todas las versiones sin tocar archivos core. Si tu instalacion no carga el JS automaticamente mediante una personalizacion no destructiva existente, agrega una referencia a `/VisualHome/assets/visualhome.js` con el mecanismo seguro que uses para personalizar Jellyfin Web. No edites ni reemplaces `index.html` del servidor.
+Jellyfin Web no garantiza una API estable para que un plugin de servidor inyecte JavaScript en todas las versiones sin tocar archivos core. Para activar la vista sin editar `index.html`, instala Tampermonkey o Violentmonkey en el navegador y agrega el userscript:
+
+```text
+https://TU_SERVIDOR:8096/VisualHome/assets/visualhome-loader.user.js
+```
+
+Tambien puedes abrir la pagina de configuracion del plugin y pulsar `Probar en esta sesion`. Eso inyecta el loader solo en la sesion actual del navegador.
+
+No edites ni reemplaces `index.html` del servidor.
 
 ## Pruebas manuales
 

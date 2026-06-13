@@ -9,8 +9,19 @@
 
     const rootId = 'vh-home-root';
 
+    function pluginUrl(path) {
+        if (window.ApiClient && ApiClient.getUrl) {
+            return ApiClient.getUrl(path);
+        }
+
+        const basePath = location.pathname.includes('/web/')
+            ? location.pathname.slice(0, location.pathname.indexOf('/web/'))
+            : '';
+        return basePath + '/' + path.replace(/^\/+/, '');
+    }
+
     function api(path) {
-        const url = window.ApiClient && ApiClient.getUrl ? ApiClient.getUrl(path) : '/' + path.replace(/^\/+/, '');
+        const url = pluginUrl(path);
         if (window.ApiClient && ApiClient.ajax) {
             return ApiClient.ajax({ type: 'GET', url: url, dataType: 'json' });
         }
@@ -44,7 +55,7 @@
 
         const link = document.createElement('link');
         link.rel = 'stylesheet';
-        link.href = '/VisualHome/assets/visualhome.css';
+        link.href = pluginUrl('VisualHome/assets/visualhome.css');
         link.dataset.vhCss = 'true';
         document.head.appendChild(link);
     }

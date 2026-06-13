@@ -8,11 +8,11 @@
     "owner": "mauspancho",
     "versions": [
       {
-        "version": "0.1.0.1",
-        "changelog": "Fix dashboard configuration loading and saving by using Jellyfin native plugin configuration APIs.",
+        "version": "0.1.0.2",
+        "changelog": "Add persistent browser userscript loader and a dashboard test button for Jellyfin Web injection without modifying core files.",
         "targetAbi": "10.11.0.0",
-        "sourceUrl": "https://raw.githubusercontent.com/mauspancho/Jellyfin.Plugin.VisualHome/main/Jellyfin.Plugin.VisualHome_0.1.0.1.zip",
-        "checksum": "cffb8c0dc314db9eea91036a4be2418e"
+        "sourceUrl": "https://raw.githubusercontent.com/mauspancho/Jellyfin.Plugin.VisualHome/main/Jellyfin.Plugin.VisualHome_0.1.0.2.zip",
+        "checksum": "7228c5d215817f4fb7549eda78be4dbc"
       }
     ]
   }

@@ -117,6 +117,9 @@
                         <button is="emby-button" type="submit" class="raised button-submit emby-button">
                             <span>Guardar configuracion</span>
                         </button>
+                        <button id="vhTestNow" is="emby-button" type="button" class="raised emby-button">
+                            <span>Probar en esta sesion</span>
+                        </button>
                         <button id="vhRestoreDefaults" is="emby-button" type="button" class="raised emby-button">
                             <span>Restaurar secciones predeterminadas</span>
                         </button>
@@ -127,7 +130,11 @@
 
                     <div class="fieldDescription" style="margin-top:1.5em;">
                         CSS: /VisualHome/assets/visualhome.css<br />
-                        JS: /VisualHome/assets/visualhome.js
+                        JS: /VisualHome/assets/visualhome.js<br />
+                        Loader persistente: /VisualHome/assets/visualhome-loader.user.js
+                    </div>
+                    <div class="fieldDescription" style="margin-top:.75em;">
+                        Jellyfin Web no carga JavaScript de plugins de servidor automaticamente. Usa "Probar en esta sesion" para validar la vista actual o instala el loader persistente en Tampermonkey/Violentmonkey.
                     </div>
                     <div id="vhStatusMessage" class="fieldDescription" style="margin-top:1em;"></div>
                 </form>
@@ -153,6 +160,10 @@
                         request.contentType = 'application/json';
                     }
                     return ApiClient.ajax(request);
+                }
+
+                function pluginUrl(path) {
+                    return ApiClient && ApiClient.getUrl ? ApiClient.getUrl(path) : '/' + path.replace(/^\/+/, '');
                 }
 
                 function showStatus(message) {
@@ -312,6 +323,19 @@
                     editingId = null;
                     render();
                     showStatus('Seccion agregada o actualizada. Guarda la configuracion para aplicar cambios.');
+                });
+
+                document.querySelector('#vhTestNow').addEventListener('click', function () {
+                    if (!document.querySelector('script[data-vh-main]')) {
+                        const script = document.createElement('script');
+                        script.src = pluginUrl('VisualHome/assets/visualhome.js');
+                        script.defer = true;
+                        script.dataset.vhMain = 'true';
+                        document.documentElement.appendChild(script);
+                    }
+
+                    showStatus('Loader insertado en esta sesion. Abriendo Home...');
+                    window.location.hash = '#!/home.html';
                 });
 
                 document.querySelector('#vhRestoreDefaults').addEventListener('click', function () {
