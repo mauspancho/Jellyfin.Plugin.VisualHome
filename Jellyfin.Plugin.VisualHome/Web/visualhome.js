@@ -11,6 +11,56 @@
     const rootId = 'vh-home-root';
     const diagnosticId = 'vh-diagnostic';
 
+    function value(source, camelName, pascalName, fallback) {
+        if (!source) {
+            return fallback;
+        }
+
+        if (source[camelName] !== undefined) {
+            return source[camelName];
+        }
+
+        if (source[pascalName] !== undefined) {
+            return source[pascalName];
+        }
+
+        return fallback;
+    }
+
+    function normalizeItem(item) {
+        return {
+            id: value(item, 'id', 'Id', ''),
+            name: value(item, 'name', 'Name', ''),
+            url: value(item, 'url', 'Url', ''),
+            overview: value(item, 'overview', 'Overview', ''),
+            productionYear: value(item, 'productionYear', 'ProductionYear', null),
+            officialRating: value(item, 'officialRating', 'OfficialRating', ''),
+            imagePrimaryUrl: value(item, 'imagePrimaryUrl', 'ImagePrimaryUrl', ''),
+            imageBackdropUrl: value(item, 'imageBackdropUrl', 'ImageBackdropUrl', ''),
+            genres: value(item, 'genres', 'Genres', [])
+        };
+    }
+
+    function normalizeSection(section) {
+        const items = value(section, 'items', 'Items', []) || [];
+        return {
+            sectionId: value(section, 'sectionId', 'SectionId', ''),
+            name: value(section, 'name', 'Name', ''),
+            visualType: value(section, 'visualType', 'VisualType', 'carousel'),
+            position: value(section, 'position', 'Position', 0),
+            success: value(section, 'success', 'Success', true),
+            items: items.map(normalizeItem)
+        };
+    }
+
+    function normalizeClientConfig(clientConfig) {
+        return {
+            pluginEnabled: value(clientConfig, 'pluginEnabled', 'PluginEnabled', false) === true,
+            visualInjectionEnabled: value(clientConfig, 'visualInjectionEnabled', 'VisualInjectionEnabled', false) === true,
+            sidebarEnabled: value(clientConfig, 'sidebarEnabled', 'SidebarEnabled', false) === true
+        };
+    }
+
     function pluginUrl(path) {
         if (window.ApiClient && ApiClient.getUrl) {
             return ApiClient.getUrl(path);
@@ -263,12 +313,13 @@
     function renderSections(sections, clientConfig) {
         const host = findHomeHost();
         removeRoot();
+        const normalizedSections = (sections || []).map(normalizeSection).sort((a, b) => a.position - b.position);
 
         const root = document.createElement('div');
         root.id = rootId;
         root.className = 'vh-home';
 
-        sections.forEach(section => {
+        normalizedSections.forEach(section => {
             if (section.success === false) {
                 return;
             }
@@ -331,13 +382,14 @@
             api('VisualHome/client-config'),
             api(withUser('VisualHome/sections'))
         ]).then(([clientConfig, sections]) => {
-            if (!clientConfig.pluginEnabled || !clientConfig.visualInjectionEnabled) {
+            const normalizedConfig = normalizeClientConfig(clientConfig);
+            if (!normalizedConfig.pluginEnabled || !normalizedConfig.visualInjectionEnabled) {
                 removeRoot();
                 renderDiagnostic('Visual Home esta desactivado en la configuracion del plugin.');
                 return;
             }
 
-            renderSections(sections || [], clientConfig);
+            renderSections(sections || [], normalizedConfig);
         }).catch(error => {
             console.warn('[VisualHome] frontend render failed', error);
             renderDiagnostic('Visual Home cargo, pero fallo al consultar el backend. Revisa la consola del navegador y los logs del servidor.');

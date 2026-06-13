@@ -131,6 +131,9 @@ public sealed class VisualHomeSectionsController : ControllerBase
         var configuration = VisualHomePlugin.Instance?.Configuration;
         return new
         {
+            pluginEnabled = configuration?.PluginEnabled == true,
+            visualInjectionEnabled = configuration?.VisualInjectionEnabled == true,
+            sidebarEnabled = configuration?.SidebarEnabled == true,
             PluginEnabled = configuration?.PluginEnabled == true,
             VisualInjectionEnabled = configuration?.VisualInjectionEnabled == true,
             SidebarEnabled = configuration?.SidebarEnabled == true
