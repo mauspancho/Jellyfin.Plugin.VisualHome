@@ -508,6 +508,33 @@
             <param name="itemTypes">String item type values.</param>
             <returns>Base item kinds.</returns>
         </member>
+        <member name="T:Jellyfin.Plugin.VisualHome.Services.VisualHomeStartupFilter">
+            <summary>
+            Adds a non-destructive response middleware that injects Visual Home assets into Jellyfin Web.
+            </summary>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Services.VisualHomeStartupFilter.Configure(System.Action{Microsoft.AspNetCore.Builder.IApplicationBuilder})">
+            <inheritdoc />
+        </member>
+        <member name="T:Jellyfin.Plugin.VisualHome.Services.VisualHomeInjectionMiddleware">
+            <summary>
+            Injects Visual Home script tags into Jellyfin Web HTML responses without editing web files on disk.
+            </summary>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Services.VisualHomeInjectionMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Logging.ILogger{Jellyfin.Plugin.VisualHome.Services.VisualHomeInjectionMiddleware})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Jellyfin.Plugin.VisualHome.Services.VisualHomeInjectionMiddleware"/> class.
+            </summary>
+            <param name="next">Next middleware.</param>
+            <param name="logger">Logger.</param>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Services.VisualHomeInjectionMiddleware.Invoke(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Executes the middleware.
+            </summary>
+            <param name="context">HTTP context.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
         <member name="T:Jellyfin.Plugin.VisualHome.VisualHomePlugin">
             <summary>
             Jellyfin Visual Home plugin entry point.

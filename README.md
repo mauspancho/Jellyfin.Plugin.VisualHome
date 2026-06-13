@@ -68,6 +68,8 @@ Jellyfin.Plugin.VisualHome\bin\Release\net9.0\Jellyfin.Plugin.VisualHome.dll
 
 ## Carga en Jellyfin Web
 
+Desde `0.1.0.3`, el plugin registra un middleware de respuesta que inyecta `visualhome.css` y `visualhome.js` en el HTML de Jellyfin Web en memoria. No modifica `index.html` ni escribe dentro de `/usr/share/jellyfin/web`.
+
 El plugin sirve los assets en:
 
 ```text
@@ -82,7 +84,7 @@ CSS fallback no destructivo:
 @import url("/VisualHome/assets/visualhome.css");
 ```
 
-JavaScript fallback persistente:
+Fallback persistente:
 
 Jellyfin Web no garantiza una API estable para que un plugin de servidor inyecte JavaScript en todas las versiones sin tocar archivos core. Para activar la vista sin editar `index.html`, instala Tampermonkey o Violentmonkey en el navegador y agrega el userscript:
 

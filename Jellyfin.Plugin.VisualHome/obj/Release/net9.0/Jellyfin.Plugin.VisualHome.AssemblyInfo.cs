@@ -12,11 +12,11 @@ using System.Reflection;
 
 [assembly: System.Reflection.AssemblyCompanyAttribute("Jellyfin.Plugin.VisualHome")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
-[assembly: System.Reflection.AssemblyFileVersionAttribute("0.1.0.2")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("0.1.0.2")]
+[assembly: System.Reflection.AssemblyFileVersionAttribute("0.1.0.3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("0.1.0.3")]
 [assembly: System.Reflection.AssemblyProductAttribute("Jellyfin.Plugin.VisualHome")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Jellyfin.Plugin.VisualHome")]
-[assembly: System.Reflection.AssemblyVersionAttribute("0.1.0.2")]
+[assembly: System.Reflection.AssemblyVersionAttribute("0.1.0.3")]
 
 // Generado por la clase WriteCodeFragment de MSBuild.
 

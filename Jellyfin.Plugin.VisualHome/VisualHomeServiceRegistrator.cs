@@ -1,6 +1,7 @@
 using Jellyfin.Plugin.VisualHome.Services;
 using MediaBrowser.Controller;
 using MediaBrowser.Controller.Plugins;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Jellyfin.Plugin.VisualHome;
@@ -16,5 +17,6 @@ public sealed class VisualHomeServiceRegistrator : IPluginServiceRegistrator
         serviceCollection.AddSingleton<SectionCacheService>();
         serviceCollection.AddSingleton<RecommendationService>();
         serviceCollection.AddSingleton<SectionQueryService>();
+        serviceCollection.AddSingleton<IStartupFilter, VisualHomeStartupFilter>();
     }
 }

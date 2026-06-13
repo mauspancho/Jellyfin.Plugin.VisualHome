@@ -8,11 +8,11 @@
     "owner": "mauspancho",
     "versions": [
       {
-        "version": "0.1.0.2",
-        "changelog": "Add persistent browser userscript loader and a dashboard test button for Jellyfin Web injection without modifying core files.",
+        "version": "0.1.0.3",
+        "changelog": "Add non-destructive Jellyfin Web HTML response injection middleware so Visual Home loads automatically without patching index.html.",
         "targetAbi": "10.11.0.0",
-        "sourceUrl": "https://raw.githubusercontent.com/mauspancho/Jellyfin.Plugin.VisualHome/main/Jellyfin.Plugin.VisualHome_0.1.0.2.zip",
-        "checksum": "7228c5d215817f4fb7549eda78be4dbc"
+        "sourceUrl": "https://raw.githubusercontent.com/mauspancho/Jellyfin.Plugin.VisualHome/main/Jellyfin.Plugin.VisualHome_0.1.0.3.zip",
+        "checksum": "95d5508ea138c11cd01a195022b29e73"
       }
     ]
   }
