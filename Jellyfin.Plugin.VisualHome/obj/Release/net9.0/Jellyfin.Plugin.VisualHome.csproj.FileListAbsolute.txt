@@ -1,0 +1,14 @@
+C:\Users\mausp\ownCloud\plugin Jellyfin\Jellyfin.Plugin.VisualHome\obj\Release\net9.0\Jellyfin.Plugin.VisualHome.csproj.AssemblyReference.cache
+C:\Users\mausp\ownCloud\plugin Jellyfin\Jellyfin.Plugin.VisualHome\obj\Release\net9.0\Jellyfin.Plugin.VisualHome.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\mausp\ownCloud\plugin Jellyfin\Jellyfin.Plugin.VisualHome\obj\Release\net9.0\Jellyfin.Plugin.VisualHome.AssemblyInfoInputs.cache
+C:\Users\mausp\ownCloud\plugin Jellyfin\Jellyfin.Plugin.VisualHome\obj\Release\net9.0\Jellyfin.Plugin.VisualHome.AssemblyInfo.cs
+C:\Users\mausp\ownCloud\plugin Jellyfin\Jellyfin.Plugin.VisualHome\obj\Release\net9.0\Jellyfin.Plugin.VisualHome.csproj.CoreCompileInputs.cache
+C:\Users\mausp\ownCloud\plugin Jellyfin\Jellyfin.Plugin.VisualHome\bin\Release\net9.0\Jellyfin.Plugin.VisualHome.deps.json
+C:\Users\mausp\ownCloud\plugin Jellyfin\Jellyfin.Plugin.VisualHome\bin\Release\net9.0\Jellyfin.Plugin.VisualHome.dll
+C:\Users\mausp\ownCloud\plugin Jellyfin\Jellyfin.Plugin.VisualHome\bin\Release\net9.0\Jellyfin.Plugin.VisualHome.pdb
+C:\Users\mausp\ownCloud\plugin Jellyfin\Jellyfin.Plugin.VisualHome\bin\Release\net9.0\Jellyfin.Plugin.VisualHome.xml
+C:\Users\mausp\ownCloud\plugin Jellyfin\Jellyfin.Plugin.VisualHome\obj\Release\net9.0\Jellyfin.Plugin.VisualHome.dll
+C:\Users\mausp\ownCloud\plugin Jellyfin\Jellyfin.Plugin.VisualHome\obj\Release\net9.0\refint\Jellyfin.Plugin.VisualHome.dll
+C:\Users\mausp\ownCloud\plugin Jellyfin\Jellyfin.Plugin.VisualHome\obj\Release\net9.0\Jellyfin.Plugin.VisualHome.xml
+C:\Users\mausp\ownCloud\plugin Jellyfin\Jellyfin.Plugin.VisualHome\obj\Release\net9.0\Jellyfin.Plugin.VisualHome.pdb
+C:\Users\mausp\ownCloud\plugin Jellyfin\Jellyfin.Plugin.VisualHome\obj\Release\net9.0\ref\Jellyfin.Plugin.VisualHome.dll

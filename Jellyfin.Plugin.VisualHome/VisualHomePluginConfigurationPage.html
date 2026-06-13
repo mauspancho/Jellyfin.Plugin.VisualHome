@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Jellyfin Visual Home</title>
+</head>
+<body>
+    <div id="VisualHomeConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-select,emby-checkbox">
+        <div data-role="content">
+            <div class="content-primary">
+                <form id="VisualHomeConfigForm">
+                    <h1>Jellyfin Visual Home</h1>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="vhPluginEnabled" type="checkbox" is="emby-checkbox" />
+                            <span>Activar plugin</span>
+                        </label>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="vhVisualInjectionEnabled" type="checkbox" is="emby-checkbox" />
+                            <span>Activar secciones visuales</span>
+                        </label>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="vhSidebarEnabled" type="checkbox" is="emby-checkbox" />
+                            <span>Activar sidebar derecha</span>
+                        </label>
+                    </div>
+
+                    <h2>Secciones</h2>
+                    <div id="vhSectionsList"></div>
+
+                    <div class="paperList" style="padding:1em;margin:1em 0;">
+                        <div class="inputContainer">
+                            <label class="inputLabel inputLabelUnfocused" for="vhSectionName">Nombre</label>
+                            <input id="vhSectionName" type="text" is="emby-input" />
+                        </div>
+
+                        <div class="selectContainer">
+                            <label class="selectLabel" for="vhVisualType">Tipo visual</label>
+                            <select is="emby-select" id="vhVisualType" class="emby-select-withcolor emby-select">
+                                <option value="hero">hero</option>
+                                <option value="carousel">carousel</option>
+                                <option value="top10">top10</option>
+                                <option value="studioCollection">studioCollection</option>
+                                <option value="genreCollection">genreCollection</option>
+                                <option value="compactRow">compactRow</option>
+                                <option value="grid">grid</option>
+                            </select>
+                        </div>
+
+                        <div class="selectContainer">
+                            <label class="selectLabel" for="vhSortBy">Ordenamiento</label>
+                            <select is="emby-select" id="vhSortBy" class="emby-select-withcolor emby-select">
+                                <option value="DateCreated">DateCreated</option>
+                                <option value="PremiereDate">PremiereDate</option>
+                                <option value="CommunityRating">CommunityRating</option>
+                                <option value="Random">Random</option>
+                                <option value="SortName">SortName</option>
+                                <option value="PlayCount">PlayCount</option>
+                                <option value="LastPlayedDate">LastPlayedDate</option>
+                                <option value="RuntimeTicks">RuntimeTicks</option>
+                                <option value="FavoritesFirst">Favoritos primero</option>
+                                <option value="Recommendation">Recomendacion</option>
+                            </select>
+                        </div>
+
+                        <div class="inputContainer">
+                            <label class="inputLabel inputLabelUnfocused" for="vhItemTypes">Tipos de item</label>
+                            <input id="vhItemTypes" type="text" is="emby-input" />
+                            <div class="fieldDescription">Separados por coma: Movie, Series, BoxSet.</div>
+                        </div>
+
+                        <div class="inputContainer">
+                            <label class="inputLabel inputLabelUnfocused" for="vhGenres">Generos</label>
+                            <input id="vhGenres" type="text" is="emby-input" />
+                        </div>
+
+                        <div class="inputContainer">
+                            <label class="inputLabel inputLabelUnfocused" for="vhRatings">Clasificaciones de edad</label>
+                            <input id="vhRatings" type="text" is="emby-input" />
+                        </div>
+
+                        <div class="inputContainer">
+                            <label class="inputLabel inputLabelUnfocused" for="vhStudios">Estudios</label>
+                            <input id="vhStudios" type="text" is="emby-input" />
+                        </div>
+
+                        <div class="inputContainer">
+                            <label class="inputLabel inputLabelUnfocused" for="vhLimit">Limite</label>
+                            <input id="vhLimit" type="number" min="1" max="100" is="emby-input" />
+                        </div>
+
+                        <div class="inputContainer">
+                            <label class="inputLabel inputLabelUnfocused" for="vhCacheMinutes">Cache en minutos</label>
+                            <input id="vhCacheMinutes" type="number" min="0" max="1440" is="emby-input" />
+                        </div>
+
+                        <div class="checkboxContainer checkboxContainer-withDescription">
+                            <label class="emby-checkbox-label">
+                                <input id="vhSectionEnabled" type="checkbox" is="emby-checkbox" />
+                                <span>Seccion activa</span>
+                            </label>
+                        </div>
+
+                        <button id="vhAddSection" is="emby-button" type="button" class="raised emby-button">
+                            <span>Agregar / actualizar seccion</span>
+                        </button>
+                    </div>
+
+                    <div style="display:flex;gap:.75em;flex-wrap:wrap;margin-top:1em;">
+                        <button is="emby-button" type="submit" class="raised button-submit emby-button">
+                            <span>Guardar configuracion</span>
+                        </button>
+                        <button id="vhRestoreDefaults" is="emby-button" type="button" class="raised emby-button">
+                            <span>Restaurar secciones predeterminadas</span>
+                        </button>
+                        <button id="vhClearCache" is="emby-button" type="button" class="raised emby-button">
+                            <span>Limpiar cache</span>
+                        </button>
+                    </div>
+
+                    <div class="fieldDescription" style="margin-top:1.5em;">
+                        CSS: /VisualHome/assets/visualhome.css<br />
+                        JS: /VisualHome/assets/visualhome.js
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            (function () {
+                const page = document.querySelector('#VisualHomeConfigPage');
+                const form = document.querySelector('#VisualHomeConfigForm');
+                let config = null;
+                let editingId = null;
+
+                function api(path, method, body) {
+                    const request = {
+                        type: method || 'GET',
+                        url: ApiClient.getUrl(path),
+                        dataType: 'json'
+                    };
+                    if (body) {
+                        request.data = JSON.stringify(body);
+                        request.contentType = 'application/json';
+                    }
+                    return ApiClient.ajax(request);
+                }
+
+                function split(value) {
+                    return (value || '').split(',').map(v => v.trim()).filter(Boolean);
+                }
+
+                function fillForm(section) {
+                    editingId = section.id || section.Id;
+                    document.querySelector('#vhSectionName').value = section.name || section.Name || '';
+                    document.querySelector('#vhVisualType').value = section.visualType || section.VisualType || 'carousel';
+                    document.querySelector('#vhSortBy').value = section.sortBy || section.SortBy || 'DateCreated';
+                    document.querySelector('#vhItemTypes').value = (section.itemTypes || section.ItemTypes || []).join(', ');
+                    document.querySelector('#vhGenres').value = (section.genres || section.Genres || []).join(', ');
+                    document.querySelector('#vhRatings').value = (section.officialRatings || section.OfficialRatings || []).join(', ');
+                    document.querySelector('#vhStudios').value = (section.studios || section.Studios || []).join(', ');
+                    document.querySelector('#vhLimit').value = section.limit || section.Limit || 20;
+                    document.querySelector('#vhCacheMinutes').value = section.cacheMinutes || section.CacheMinutes || 5;
+                    document.querySelector('#vhSectionEnabled').checked = (section.enabled ?? section.Enabled) !== false;
+                }
+
+                function readForm() {
+                    const existing = (config.sections || config.Sections || []).find(s => (s.id || s.Id) === editingId) || {};
+                    const newId = self.crypto && self.crypto.randomUUID
+                        ? self.crypto.randomUUID().replaceAll('-', '')
+                        : String(Date.now()) + String(Math.random()).replace('0.', '');
+                    return Object.assign({}, existing, {
+                        id: editingId || newId,
+                        name: document.querySelector('#vhSectionName').value || 'Nueva seccion',
+                        enabled: document.querySelector('#vhSectionEnabled').checked,
+                        visualType: document.querySelector('#vhVisualType').value,
+                        position: existing.position ?? existing.Position ?? (config.sections || config.Sections || []).length * 10,
+                        itemTypes: split(document.querySelector('#vhItemTypes').value),
+                        genres: split(document.querySelector('#vhGenres').value),
+                        officialRatings: split(document.querySelector('#vhRatings').value),
+                        studios: split(document.querySelector('#vhStudios').value),
+                        sortBy: document.querySelector('#vhSortBy').value,
+                        sortDescending: document.querySelector('#vhSortBy').value !== 'SortName',
+                        limit: parseInt(document.querySelector('#vhLimit').value || '20', 10),
+                        cacheMinutes: parseInt(document.querySelector('#vhCacheMinutes').value || '5', 10)
+                    });
+                }
+
+                function render() {
+                    document.querySelector('#vhPluginEnabled').checked = config.pluginEnabled ?? config.PluginEnabled;
+                    document.querySelector('#vhVisualInjectionEnabled').checked = config.visualInjectionEnabled ?? config.VisualInjectionEnabled;
+                    document.querySelector('#vhSidebarEnabled').checked = config.sidebarEnabled ?? config.SidebarEnabled;
+
+                    const sections = (config.sections || config.Sections || []).slice().sort((a, b) => (a.position ?? a.Position) - (b.position ?? b.Position));
+                    const list = document.querySelector('#vhSectionsList');
+                    list.innerHTML = '';
+                    sections.forEach((section, index) => {
+                        const id = section.id || section.Id;
+                        const row = document.createElement('div');
+                        row.className = 'paperList';
+                        row.style.cssText = 'display:flex;align-items:center;gap:.75em;padding:.85em;margin:.5em 0;flex-wrap:wrap;';
+                        row.innerHTML = '<div style="flex:1 1 18em;"><b>' + (section.name || section.Name) + '</b><div class="fieldDescription">' + (section.visualType || section.VisualType) + ' · ' + (section.sortBy || section.SortBy) + '</div></div>';
+
+                        [
+                            ['Editar', () => fillForm(section)],
+                            ['Subir', () => move(index, -1)],
+                            ['Bajar', () => move(index, 1)],
+                            ['Eliminar', () => remove(id)]
+                        ].forEach(([label, handler]) => {
+                            const button = document.createElement('button');
+                            button.type = 'button';
+                            button.setAttribute('is', 'emby-button');
+                            button.className = 'emby-button';
+                            button.textContent = label;
+                            button.addEventListener('click', handler);
+                            row.appendChild(button);
+                        });
+                        list.appendChild(row);
+                    });
+                }
+
+                function move(index, direction) {
+                    const sections = config.sections || config.Sections;
+                    const next = index + direction;
+                    if (next < 0 || next >= sections.length) {
+                        return;
+                    }
+                    [sections[index], sections[next]] = [sections[next], sections[index]];
+                    sections.forEach((section, i) => {
+                        section.position = i * 10;
+                        section.Position = i * 10;
+                    });
+                    render();
+                }
+
+                function remove(id) {
+                    const sections = config.sections || config.Sections;
+                    const next = sections.filter(section => (section.id || section.Id) !== id);
+                    config.sections = next;
+                    config.Sections = next;
+                    render();
+                }
+
+                function load() {
+                    Dashboard.showLoadingMsg();
+                    api('VisualHome/config').then(result => {
+                        config = result;
+                        render();
+                        fillForm((config.sections || config.Sections || [])[0] || {});
+                        Dashboard.hideLoadingMsg();
+                    });
+                }
+
+                page.addEventListener('pageshow', load);
+
+                document.querySelector('#vhAddSection').addEventListener('click', function () {
+                    const sections = config.sections || config.Sections || [];
+                    const section = readForm();
+                    const index = sections.findIndex(s => (s.id || s.Id) === (section.id || section.Id));
+                    if (index >= 0) {
+                        sections[index] = section;
+                    } else {
+                        sections.push(section);
+                    }
+                    config.sections = sections;
+                    config.Sections = sections;
+                    editingId = null;
+                    render();
+                });
+
+                document.querySelector('#vhRestoreDefaults').addEventListener('click', function () {
+                    Dashboard.showLoadingMsg();
+                    api('VisualHome/config/restore-defaults', 'POST').then(result => {
+                        config = result;
+                        render();
+                        Dashboard.hideLoadingMsg();
+                    });
+                });
+
+                document.querySelector('#vhClearCache').addEventListener('click', function () {
+                    Dashboard.showLoadingMsg();
+                    api('VisualHome/config/clear-cache', 'POST').then(function () {
+                        Dashboard.hideLoadingMsg();
+                    });
+                });
+
+                form.addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    config.pluginEnabled = document.querySelector('#vhPluginEnabled').checked;
+                    config.visualInjectionEnabled = document.querySelector('#vhVisualInjectionEnabled').checked;
+                    config.sidebarEnabled = document.querySelector('#vhSidebarEnabled').checked;
+                    config.PluginEnabled = config.pluginEnabled;
+                    config.VisualInjectionEnabled = config.visualInjectionEnabled;
+                    config.SidebarEnabled = config.sidebarEnabled;
+
+                    Dashboard.showLoadingMsg();
+                    api('VisualHome/config', 'POST', config).then(result => {
+                        config = result;
+                        Dashboard.processPluginConfigurationUpdateResult({ Success: true });
+                    });
+                    return false;
+                });
+            })();
+        </script>
+    </div>
+</body>
+</html>

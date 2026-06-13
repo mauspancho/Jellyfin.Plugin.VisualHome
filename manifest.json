@@ -1,0 +1,19 @@
+[
+  {
+    "category": "General",
+    "guid": "3f09ff47-54d2-4d7a-bf43-cf54d17e6701",
+    "name": "Jellyfin Visual Home",
+    "description": "Modern visual home sections for Jellyfin Web using only local Jellyfin library data.",
+    "overview": "Adds configurable hero, carousel, top 10, studio, genre, family, horror, short movie and recommendation sections without modifying Jellyfin Web files.",
+    "owner": "mauspancho",
+    "versions": [
+      {
+        "version": "0.1.0.0",
+        "changelog": "Initial lightweight Visual Home implementation.",
+        "targetAbi": "10.11.0.0",
+        "sourceUrl": "https://raw.githubusercontent.com/mauspancho/Jellyfin.Plugin.VisualHome/main/Jellyfin.Plugin.VisualHome_0.1.0.0.zip",
+        "checksum": ""
+      }
+    ]
+  }
+]

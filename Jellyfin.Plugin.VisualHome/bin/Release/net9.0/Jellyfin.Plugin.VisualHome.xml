@@ -1,0 +1,551 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Jellyfin.Plugin.VisualHome</name>
+    </assembly>
+    <members>
+        <member name="T:Jellyfin.Plugin.VisualHome.Configuration.VisualHomeConfiguration">
+            <summary>
+            Persistent plugin configuration.
+            </summary>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Configuration.VisualHomeConfiguration.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Jellyfin.Plugin.VisualHome.Configuration.VisualHomeConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Configuration.VisualHomeConfiguration.PluginEnabled">
+            <summary>
+            Gets or sets a value indicating whether the plugin should serve sections.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Configuration.VisualHomeConfiguration.VisualInjectionEnabled">
+            <summary>
+            Gets or sets a value indicating whether the frontend should render visual sections.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Configuration.VisualHomeConfiguration.SidebarEnabled">
+            <summary>
+            Gets or sets a value indicating whether the optional right sidebar is enabled.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Configuration.VisualHomeConfiguration.Sections">
+            <summary>
+            Gets or sets the configured visual sections.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Configuration.VisualHomeConfiguration.StudioCollections">
+            <summary>
+            Gets or sets studio shortcut definitions.
+            </summary>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Configuration.VisualHomeConfiguration.CreateDefaultSections">
+            <summary>
+            Creates the default section list.
+            </summary>
+            <returns>Default section list.</returns>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Configuration.VisualHomeConfiguration.CreateDefaultStudios">
+            <summary>
+            Creates default studio shortcuts.
+            </summary>
+            <returns>Default studios.</returns>
+        </member>
+        <member name="T:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeConfigController">
+            <summary>
+            Administrative endpoints for Visual Home.
+            </summary>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeConfigController.#ctor(MediaBrowser.Controller.Library.ILibraryManager,MediaBrowser.Controller.Library.IUserManager,Jellyfin.Plugin.VisualHome.Services.SectionCacheService,Microsoft.Extensions.Logging.ILogger{Jellyfin.Plugin.VisualHome.Controllers.VisualHomeConfigController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeConfigController"/> class.
+            </summary>
+            <param name="libraryManager">Library manager.</param>
+            <param name="userManager">User manager.</param>
+            <param name="cacheService">Cache service.</param>
+            <param name="logger">Logger.</param>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeConfigController.GetConfiguration">
+            <summary>
+            Gets current plugin configuration.
+            </summary>
+            <returns>Current configuration.</returns>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeConfigController.SaveConfiguration(Jellyfin.Plugin.VisualHome.Configuration.VisualHomeConfiguration)">
+            <summary>
+            Saves plugin configuration.
+            </summary>
+            <param name="configuration">New configuration.</param>
+            <returns>Saved configuration.</returns>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeConfigController.GetLibraries">
+            <summary>
+            Lists available virtual libraries.
+            </summary>
+            <returns>Library list.</returns>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeConfigController.GetGenres">
+            <summary>
+            Lists available genres.
+            </summary>
+            <returns>Genre list.</returns>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeConfigController.GetOfficialRatings">
+            <summary>
+            Lists available official ratings.
+            </summary>
+            <returns>Rating list.</returns>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeConfigController.GetStudios">
+            <summary>
+            Lists available studios.
+            </summary>
+            <returns>Studio list.</returns>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeConfigController.RestoreDefaults">
+            <summary>
+            Restores default sections and studios.
+            </summary>
+            <returns>Updated configuration.</returns>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeConfigController.ClearCache">
+            <summary>
+            Clears Visual Home cache.
+            </summary>
+            <returns>Status payload.</returns>
+        </member>
+        <member name="T:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeSectionsController">
+            <summary>
+            Read endpoints and web assets for Visual Home.
+            </summary>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeSectionsController.#ctor(MediaBrowser.Controller.Library.IUserManager,Jellyfin.Plugin.VisualHome.Services.SectionCacheService,Jellyfin.Plugin.VisualHome.Services.SectionQueryService,Microsoft.Extensions.Logging.ILogger{Jellyfin.Plugin.VisualHome.Controllers.VisualHomeSectionsController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeSectionsController"/> class.
+            </summary>
+            <param name="userManager">User manager.</param>
+            <param name="cacheService">Cache service.</param>
+            <param name="sectionQueryService">Section query service.</param>
+            <param name="logger">Logger.</param>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeSectionsController.GetActiveSections">
+            <summary>
+            Gets active renderable sections for the current user.
+            </summary>
+            <returns>Renderable sections.</returns>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeSectionsController.GetSection(System.String)">
+            <summary>
+            Gets one section by id.
+            </summary>
+            <param name="sectionId">Section id.</param>
+            <returns>Renderable section.</returns>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeSectionsController.GetClientConfig">
+            <summary>
+            Gets public frontend configuration.
+            </summary>
+            <returns>Public configuration.</returns>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeSectionsController.GetAsset(System.String)">
+            <summary>
+            Serves whitelisted embedded frontend assets.
+            </summary>
+            <param name="fileName">Asset file name.</param>
+            <returns>Asset file.</returns>
+        </member>
+        <member name="T:Jellyfin.Plugin.VisualHome.Models.StudioCollectionConfig">
+            <summary>
+            Configures a studio visual shortcut.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.StudioCollectionConfig.Name">
+            <summary>
+            Gets or sets the studio name.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.StudioCollectionConfig.LogoUrl">
+            <summary>
+            Gets or sets an optional logo URL.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.StudioCollectionConfig.BackdropUrl">
+            <summary>
+            Gets or sets an optional backdrop URL.
+            </summary>
+        </member>
+        <member name="T:Jellyfin.Plugin.VisualHome.Models.VisualHomeItemDto">
+            <summary>
+            Lightweight item payload for Jellyfin Web.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualHomeItemDto.Id">
+            <summary>
+            Gets or sets the item id.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualHomeItemDto.Name">
+            <summary>
+            Gets or sets the item name.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualHomeItemDto.Type">
+            <summary>
+            Gets or sets the Jellyfin item type.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualHomeItemDto.Overview">
+            <summary>
+            Gets or sets the overview.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualHomeItemDto.ProductionYear">
+            <summary>
+            Gets or sets the production year.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualHomeItemDto.OfficialRating">
+            <summary>
+            Gets or sets the official rating.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualHomeItemDto.CommunityRating">
+            <summary>
+            Gets or sets the community rating.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualHomeItemDto.RuntimeTicks">
+            <summary>
+            Gets or sets the runtime in ticks.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualHomeItemDto.ImagePrimaryUrl">
+            <summary>
+            Gets or sets the primary image URL.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualHomeItemDto.ImageBackdropUrl">
+            <summary>
+            Gets or sets the backdrop image URL.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualHomeItemDto.LogoUrl">
+            <summary>
+            Gets or sets the logo image URL.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualHomeItemDto.Genres">
+            <summary>
+            Gets or sets the genres.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualHomeItemDto.Studios">
+            <summary>
+            Gets or sets the studios.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualHomeItemDto.IsFavorite">
+            <summary>
+            Gets or sets a value indicating whether the current user marked the item favorite.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualHomeItemDto.IsPlayed">
+            <summary>
+            Gets or sets a value indicating whether the current user played the item.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualHomeItemDto.IsResumable">
+            <summary>
+            Gets or sets a value indicating whether the current user can resume the item.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualHomeItemDto.Url">
+            <summary>
+            Gets or sets the Jellyfin Web details URL.
+            </summary>
+        </member>
+        <member name="T:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig">
+            <summary>
+            Configures one visual home section.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.Id">
+            <summary>
+            Gets or sets the section id.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.Name">
+            <summary>
+            Gets or sets the section display name.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.Enabled">
+            <summary>
+            Gets or sets a value indicating whether this section is enabled.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.VisualType">
+            <summary>
+            Gets or sets the visual type.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.Position">
+            <summary>
+            Gets or sets the section order.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.LibraryIds">
+            <summary>
+            Gets or sets included top-level library ids.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.ItemTypes">
+            <summary>
+            Gets or sets included item types.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.Genres">
+            <summary>
+            Gets or sets genre filters.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.OfficialRatings">
+            <summary>
+            Gets or sets official rating filters.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.Studios">
+            <summary>
+            Gets or sets studio filters.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.Tags">
+            <summary>
+            Gets or sets tag filters.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.YearFrom">
+            <summary>
+            Gets or sets the start year.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.YearTo">
+            <summary>
+            Gets or sets the end year.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.MinCommunityRating">
+            <summary>
+            Gets or sets the minimum community rating.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.MaxRuntimeMinutes">
+            <summary>
+            Gets or sets the maximum runtime in minutes.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.IsFavorite">
+            <summary>
+            Gets or sets favorite state filter.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.IsPlayed">
+            <summary>
+            Gets or sets played state filter.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.IsResumable">
+            <summary>
+            Gets or sets resumable state filter.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.AddedWithinDays">
+            <summary>
+            Gets or sets a recent added-days filter.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.PremiereDateFrom">
+            <summary>
+            Gets or sets the minimum premiere date.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.PremiereDateTo">
+            <summary>
+            Gets or sets the maximum premiere date.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.SortBy">
+            <summary>
+            Gets or sets the sort key.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.SortDescending">
+            <summary>
+            Gets or sets a value indicating whether the sort is descending.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.Limit">
+            <summary>
+            Gets or sets the maximum result count.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.CacheMinutes">
+            <summary>
+            Gets or sets cache lifetime in minutes.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig.VisibleUserIds">
+            <summary>
+            Gets or sets user ids that may see this section. Empty means all users.
+            </summary>
+        </member>
+        <member name="T:Jellyfin.Plugin.VisualHome.Models.VisualSectionResult">
+            <summary>
+            Renderable section payload.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionResult.SectionId">
+            <summary>
+            Gets or sets the section id.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionResult.Name">
+            <summary>
+            Gets or sets the section name.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionResult.VisualType">
+            <summary>
+            Gets or sets the visual type.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionResult.Position">
+            <summary>
+            Gets or sets the section position.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionResult.Items">
+            <summary>
+            Gets or sets items in this section.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionResult.Success">
+            <summary>
+            Gets or sets a value indicating whether the section query succeeded.
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.Models.VisualSectionResult.ErrorMessage">
+            <summary>
+            Gets or sets a controlled error message.
+            </summary>
+        </member>
+        <member name="T:Jellyfin.Plugin.VisualHome.Services.RecommendationService">
+            <summary>
+            Basic recommendation service based only on local Jellyfin data.
+            </summary>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Services.RecommendationService.#ctor(MediaBrowser.Controller.Library.ILibraryManager,MediaBrowser.Controller.Library.IUserDataManager)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Jellyfin.Plugin.VisualHome.Services.RecommendationService"/> class.
+            </summary>
+            <param name="libraryManager">Library manager.</param>
+            <param name="userDataManager">User data manager.</param>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Services.RecommendationService.GetRecommendations(Jellyfin.Database.Implementations.Entities.User,Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig)">
+            <summary>
+            Gets local recommendations for a user.
+            </summary>
+            <param name="user">Current user.</param>
+            <param name="section">Section configuration.</param>
+            <returns>Recommended base items.</returns>
+        </member>
+        <member name="T:Jellyfin.Plugin.VisualHome.Services.SectionCacheService">
+            <summary>
+            Small in-memory cache for section payloads.
+            </summary>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Services.SectionCacheService.GetOrCreate(System.String,System.Int32,System.Func{Jellyfin.Plugin.VisualHome.Models.VisualSectionResult})">
+            <summary>
+            Gets an existing entry or creates one.
+            </summary>
+            <param name="key">Cache key.</param>
+            <param name="cacheMinutes">Cache lifetime in minutes.</param>
+            <param name="factory">Factory for uncached values.</param>
+            <returns>Cached or fresh section.</returns>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Services.SectionCacheService.Clear">
+            <summary>
+            Clears all cached entries.
+            </summary>
+        </member>
+        <member name="T:Jellyfin.Plugin.VisualHome.Services.SectionQueryService">
+            <summary>
+            Queries Jellyfin library items for configured visual sections.
+            </summary>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Services.SectionQueryService.#ctor(MediaBrowser.Controller.Library.ILibraryManager,MediaBrowser.Controller.Library.IUserDataManager,Jellyfin.Plugin.VisualHome.Services.RecommendationService,Microsoft.Extensions.Logging.ILogger{Jellyfin.Plugin.VisualHome.Services.SectionQueryService})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Jellyfin.Plugin.VisualHome.Services.SectionQueryService"/> class.
+            </summary>
+            <param name="libraryManager">Library manager.</param>
+            <param name="userDataManager">User data manager.</param>
+            <param name="recommendationService">Recommendation service.</param>
+            <param name="logger">Logger.</param>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Services.SectionQueryService.BuildSection(Jellyfin.Plugin.VisualHome.Models.VisualSectionConfig,Jellyfin.Plugin.VisualHome.Configuration.VisualHomeConfiguration,Jellyfin.Database.Implementations.Entities.User)">
+            <summary>
+            Builds a renderable section.
+            </summary>
+            <param name="section">Section configuration.</param>
+            <param name="configuration">Plugin configuration.</param>
+            <param name="user">Current user.</param>
+            <returns>Renderable section.</returns>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Services.SectionQueryService.ParseItemTypes(System.Collections.Generic.IReadOnlyCollection{System.String})">
+            <summary>
+            Parses configured item types.
+            </summary>
+            <param name="itemTypes">String item type values.</param>
+            <returns>Base item kinds.</returns>
+        </member>
+        <member name="T:Jellyfin.Plugin.VisualHome.VisualHomePlugin">
+            <summary>
+            Jellyfin Visual Home plugin entry point.
+            </summary>
+        </member>
+        <member name="F:Jellyfin.Plugin.VisualHome.VisualHomePlugin.PluginId">
+            <summary>
+            Plugin id.
+            </summary>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.VisualHomePlugin.#ctor(MediaBrowser.Common.Configuration.IApplicationPaths,MediaBrowser.Model.Serialization.IXmlSerializer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Jellyfin.Plugin.VisualHome.VisualHomePlugin"/> class.
+            </summary>
+            <param name="applicationPaths">Application paths.</param>
+            <param name="xmlSerializer">XML serializer.</param>
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.VisualHomePlugin.Name">
+            <inheritdoc />
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.VisualHomePlugin.Id">
+            <inheritdoc />
+        </member>
+        <member name="P:Jellyfin.Plugin.VisualHome.VisualHomePlugin.Instance">
+            <summary>
+            Gets the active plugin instance.
+            </summary>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.VisualHomePlugin.GetPages">
+            <inheritdoc />
+        </member>
+        <member name="T:Jellyfin.Plugin.VisualHome.VisualHomeServiceRegistrator">
+            <summary>
+            Registers Visual Home services in Jellyfin DI.
+            </summary>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.VisualHomeServiceRegistrator.RegisterServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,MediaBrowser.Controller.IServerApplicationHost)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>
