@@ -129,6 +129,7 @@
                         CSS: /VisualHome/assets/visualhome.css<br />
                         JS: /VisualHome/assets/visualhome.js
                     </div>
+                    <div id="vhStatusMessage" class="fieldDescription" style="margin-top:1em;"></div>
                 </form>
             </div>
         </div>
@@ -137,6 +138,7 @@
             (function () {
                 const page = document.querySelector('#VisualHomeConfigPage');
                 const form = document.querySelector('#VisualHomeConfigForm');
+                const pluginUniqueId = '3f09ff47-54d2-4d7a-bf43-cf54d17e6701';
                 let config = null;
                 let editingId = null;
 
@@ -151,6 +153,29 @@
                         request.contentType = 'application/json';
                     }
                     return ApiClient.ajax(request);
+                }
+
+                function showStatus(message) {
+                    document.querySelector('#vhStatusMessage').textContent = message || '';
+                }
+
+                function finishLoading() {
+                    Dashboard.hideLoadingMsg();
+                }
+
+                function fail(error, message) {
+                    console.error('[VisualHome] ' + message, error);
+                    showStatus(message);
+                    finishLoading();
+                }
+
+                function getSections() {
+                    return config.sections || config.Sections || [];
+                }
+
+                function setSections(sections) {
+                    config.sections = sections;
+                    config.Sections = sections;
                 }
 
                 function split(value) {
@@ -172,25 +197,39 @@
                 }
 
                 function readForm() {
-                    const existing = (config.sections || config.Sections || []).find(s => (s.id || s.Id) === editingId) || {};
+                    const existing = getSections().find(s => (s.id || s.Id) === editingId) || {};
                     const newId = self.crypto && self.crypto.randomUUID
                         ? self.crypto.randomUUID().replaceAll('-', '')
                         : String(Date.now()) + String(Math.random()).replace('0.', '');
-                    return Object.assign({}, existing, {
-                        id: editingId || newId,
-                        name: document.querySelector('#vhSectionName').value || 'Nueva seccion',
-                        enabled: document.querySelector('#vhSectionEnabled').checked,
-                        visualType: document.querySelector('#vhVisualType').value,
-                        position: existing.position ?? existing.Position ?? (config.sections || config.Sections || []).length * 10,
-                        itemTypes: split(document.querySelector('#vhItemTypes').value),
-                        genres: split(document.querySelector('#vhGenres').value),
-                        officialRatings: split(document.querySelector('#vhRatings').value),
-                        studios: split(document.querySelector('#vhStudios').value),
-                        sortBy: document.querySelector('#vhSortBy').value,
-                        sortDescending: document.querySelector('#vhSortBy').value !== 'SortName',
-                        limit: parseInt(document.querySelector('#vhLimit').value || '20', 10),
-                        cacheMinutes: parseInt(document.querySelector('#vhCacheMinutes').value || '5', 10)
+                    const section = Object.assign({}, existing, {
+                        Id: editingId || newId,
+                        Name: document.querySelector('#vhSectionName').value || 'Nueva seccion',
+                        Enabled: document.querySelector('#vhSectionEnabled').checked,
+                        VisualType: document.querySelector('#vhVisualType').value,
+                        Position: existing.position ?? existing.Position ?? getSections().length * 10,
+                        ItemTypes: split(document.querySelector('#vhItemTypes').value),
+                        Genres: split(document.querySelector('#vhGenres').value),
+                        OfficialRatings: split(document.querySelector('#vhRatings').value),
+                        Studios: split(document.querySelector('#vhStudios').value),
+                        SortBy: document.querySelector('#vhSortBy').value,
+                        SortDescending: document.querySelector('#vhSortBy').value !== 'SortName',
+                        Limit: parseInt(document.querySelector('#vhLimit').value || '20', 10),
+                        CacheMinutes: parseInt(document.querySelector('#vhCacheMinutes').value || '5', 10)
                     });
+                    section.id = section.Id;
+                    section.name = section.Name;
+                    section.enabled = section.Enabled;
+                    section.visualType = section.VisualType;
+                    section.position = section.Position;
+                    section.itemTypes = section.ItemTypes;
+                    section.genres = section.Genres;
+                    section.officialRatings = section.OfficialRatings;
+                    section.studios = section.Studios;
+                    section.sortBy = section.SortBy;
+                    section.sortDescending = section.SortDescending;
+                    section.limit = section.Limit;
+                    section.cacheMinutes = section.CacheMinutes;
+                    return section;
                 }
 
                 function render() {
@@ -198,7 +237,7 @@
                     document.querySelector('#vhVisualInjectionEnabled').checked = config.visualInjectionEnabled ?? config.VisualInjectionEnabled;
                     document.querySelector('#vhSidebarEnabled').checked = config.sidebarEnabled ?? config.SidebarEnabled;
 
-                    const sections = (config.sections || config.Sections || []).slice().sort((a, b) => (a.position ?? a.Position) - (b.position ?? b.Position));
+                    const sections = getSections().slice().sort((a, b) => (a.position ?? a.Position) - (b.position ?? b.Position));
                     const list = document.querySelector('#vhSectionsList');
                     list.innerHTML = '';
                     sections.forEach((section, index) => {
@@ -206,7 +245,7 @@
                         const row = document.createElement('div');
                         row.className = 'paperList';
                         row.style.cssText = 'display:flex;align-items:center;gap:.75em;padding:.85em;margin:.5em 0;flex-wrap:wrap;';
-                        row.innerHTML = '<div style="flex:1 1 18em;"><b>' + (section.name || section.Name) + '</b><div class="fieldDescription">' + (section.visualType || section.VisualType) + ' · ' + (section.sortBy || section.SortBy) + '</div></div>';
+                        row.innerHTML = '<div style="flex:1 1 18em;"><b>' + (section.name || section.Name) + '</b><div class="fieldDescription">' + (section.visualType || section.VisualType) + ' - ' + (section.sortBy || section.SortBy) + '</div></div>';
 
                         [
                             ['Editar', () => fillForm(section)],
@@ -227,7 +266,7 @@
                 }
 
                 function move(index, direction) {
-                    const sections = config.sections || config.Sections;
+                    const sections = getSections();
                     const next = index + direction;
                     if (next < 0 || next >= sections.length) {
                         return;
@@ -241,27 +280,27 @@
                 }
 
                 function remove(id) {
-                    const sections = config.sections || config.Sections;
+                    const sections = getSections();
                     const next = sections.filter(section => (section.id || section.Id) !== id);
-                    config.sections = next;
-                    config.Sections = next;
+                    setSections(next);
                     render();
                 }
 
                 function load() {
                     Dashboard.showLoadingMsg();
-                    api('VisualHome/config').then(result => {
+                    showStatus('');
+                    ApiClient.getPluginConfiguration(pluginUniqueId).then(result => {
                         config = result;
                         render();
-                        fillForm((config.sections || config.Sections || [])[0] || {});
-                        Dashboard.hideLoadingMsg();
-                    });
+                        fillForm((getSections())[0] || {});
+                        finishLoading();
+                    }).catch(error => fail(error, 'No se pudo cargar la configuracion del plugin.'));
                 }
 
                 page.addEventListener('pageshow', load);
 
                 document.querySelector('#vhAddSection').addEventListener('click', function () {
-                    const sections = config.sections || config.Sections || [];
+                    const sections = getSections();
                     const section = readForm();
                     const index = sections.findIndex(s => (s.id || s.Id) === (section.id || section.Id));
                     if (index >= 0) {
@@ -269,26 +308,29 @@
                     } else {
                         sections.push(section);
                     }
-                    config.sections = sections;
-                    config.Sections = sections;
+                    setSections(sections);
                     editingId = null;
                     render();
+                    showStatus('Seccion agregada o actualizada. Guarda la configuracion para aplicar cambios.');
                 });
 
                 document.querySelector('#vhRestoreDefaults').addEventListener('click', function () {
                     Dashboard.showLoadingMsg();
+                    showStatus('');
                     api('VisualHome/config/restore-defaults', 'POST').then(result => {
                         config = result;
                         render();
-                        Dashboard.hideLoadingMsg();
-                    });
+                        finishLoading();
+                    }).catch(error => fail(error, 'No se pudieron restaurar las secciones predeterminadas.'));
                 });
 
                 document.querySelector('#vhClearCache').addEventListener('click', function () {
                     Dashboard.showLoadingMsg();
+                    showStatus('');
                     api('VisualHome/config/clear-cache', 'POST').then(function () {
-                        Dashboard.hideLoadingMsg();
-                    });
+                        showStatus('Cache limpiado.');
+                        finishLoading();
+                    }).catch(error => fail(error, 'No se pudo limpiar el cache.'));
                 });
 
                 form.addEventListener('submit', function (event) {
@@ -301,10 +343,12 @@
                     config.SidebarEnabled = config.sidebarEnabled;
 
                     Dashboard.showLoadingMsg();
-                    api('VisualHome/config', 'POST', config).then(result => {
-                        config = result;
-                        Dashboard.processPluginConfigurationUpdateResult({ Success: true });
-                    });
+                    showStatus('');
+                    ApiClient.updatePluginConfiguration(pluginUniqueId, config).then(function (result) {
+                        Dashboard.processPluginConfigurationUpdateResult(result);
+                        showStatus('Configuracion guardada.');
+                        finishLoading();
+                    }).catch(error => fail(error, 'No se pudo guardar la configuracion.'));
                     return false;
                 });
             })();
