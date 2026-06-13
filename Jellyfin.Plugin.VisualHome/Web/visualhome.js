@@ -4,10 +4,12 @@
     const state = {
         rendering: false,
         lastPath: '',
-        observer: null
+        observer: null,
+        apiWaits: 0
     };
 
     const rootId = 'vh-home-root';
+    const diagnosticId = 'vh-diagnostic';
 
     function pluginUrl(path) {
         if (window.ApiClient && ApiClient.getUrl) {
@@ -29,11 +31,39 @@
         return fetch(url, { credentials: 'same-origin' }).then(response => response.json());
     }
 
+    function currentUserId() {
+        try {
+            if (window.ApiClient && ApiClient.getCurrentUserId) {
+                return ApiClient.getCurrentUserId();
+            }
+
+            if (window.ApiClient && ApiClient._serverInfo && ApiClient._serverInfo.UserId) {
+                return ApiClient._serverInfo.UserId;
+            }
+        } catch (error) {
+            console.warn('[VisualHome] user id lookup failed', error);
+        }
+
+        return '';
+    }
+
+    function withUser(path) {
+        const userId = currentUserId();
+        if (!userId) {
+            return path;
+        }
+
+        return path + (path.includes('?') ? '&' : '?') + 'userId=' + encodeURIComponent(userId);
+    }
+
     function isHomePage() {
         const hash = (location.hash || '').toLowerCase();
         const path = (location.pathname || '').toLowerCase();
         return hash === '' ||
             hash === '#!/home.html' ||
+            hash === '#/home.html' ||
+            hash === '#!/home' ||
+            hash === '#/home' ||
             hash.includes('/home.html') ||
             hash.includes('home') ||
             path.endsWith('/web/') ||
@@ -65,6 +95,24 @@
         if (existing) {
             existing.remove();
         }
+
+        const diagnostic = document.getElementById(diagnosticId);
+        if (diagnostic) {
+            diagnostic.remove();
+        }
+    }
+
+    function renderDiagnostic(message) {
+        const host = findHomeHost();
+        let diagnostic = document.getElementById(diagnosticId);
+        if (!diagnostic) {
+            diagnostic = document.createElement('div');
+            diagnostic.id = diagnosticId;
+            diagnostic.className = 'vh-diagnostic';
+            host.prepend(diagnostic);
+        }
+
+        diagnostic.textContent = message;
     }
 
     function itemImage(url) {
@@ -242,6 +290,8 @@
 
         if (root.childElementCount > 0) {
             host.prepend(root);
+        } else {
+            renderDiagnostic('Visual Home cargo, pero no recibio secciones con items. Revisa /VisualHome/sections y los logs [VisualHome].');
         }
     }
 
@@ -262,21 +312,35 @@
             return;
         }
 
+        if (!window.ApiClient || !ApiClient.ajax) {
+            if (state.apiWaits < 40) {
+                state.apiWaits += 1;
+                window.setTimeout(scheduleRender, 250);
+                return;
+            }
+
+            renderDiagnostic('Visual Home no pudo encontrar ApiClient de Jellyfin Web.');
+            return;
+        }
+
+        state.apiWaits = 0;
         state.rendering = true;
         ensureStylesheet();
 
         Promise.all([
             api('VisualHome/client-config'),
-            api('VisualHome/sections')
+            api(withUser('VisualHome/sections'))
         ]).then(([clientConfig, sections]) => {
             if (!clientConfig.pluginEnabled || !clientConfig.visualInjectionEnabled) {
                 removeRoot();
+                renderDiagnostic('Visual Home esta desactivado en la configuracion del plugin.');
                 return;
             }
 
             renderSections(sections || [], clientConfig);
         }).catch(error => {
             console.warn('[VisualHome] frontend render failed', error);
+            renderDiagnostic('Visual Home cargo, pero fallo al consultar el backend. Revisa la consola del navegador y los logs del servidor.');
         }).finally(() => {
             state.lastPath = path;
             state.rendering = false;

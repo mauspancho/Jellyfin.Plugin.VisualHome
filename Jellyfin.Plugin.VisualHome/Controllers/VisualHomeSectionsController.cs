@@ -54,7 +54,7 @@ public sealed class VisualHomeSectionsController : ControllerBase
     /// <returns>Renderable sections.</returns>
     [Authorize]
     [HttpGet("sections")]
-    public ActionResult<IEnumerable<VisualSectionResult>> GetActiveSections()
+    public ActionResult<IEnumerable<VisualSectionResult>> GetActiveSections([FromQuery] string? userId = null)
     {
         var configuration = VisualHomePlugin.Instance?.Configuration;
         if (configuration is null || !configuration.PluginEnabled || !configuration.VisualInjectionEnabled)
@@ -62,7 +62,7 @@ public sealed class VisualHomeSectionsController : ControllerBase
             return Array.Empty<VisualSectionResult>();
         }
 
-        var user = GetCurrentUser();
+        var user = GetCurrentUser(userId);
         if (user is null)
         {
             return Unauthorized();
@@ -89,10 +89,11 @@ public sealed class VisualHomeSectionsController : ControllerBase
     /// Gets one section by id.
     /// </summary>
     /// <param name="sectionId">Section id.</param>
+    /// <param name="userId">Optional current user id fallback.</param>
     /// <returns>Renderable section.</returns>
     [Authorize]
     [HttpGet("sections/{sectionId}")]
-    public ActionResult<VisualSectionResult> GetSection(string sectionId)
+    public ActionResult<VisualSectionResult> GetSection(string sectionId, [FromQuery] string? userId = null)
     {
         var configuration = VisualHomePlugin.Instance?.Configuration;
         if (configuration is null || !configuration.PluginEnabled)
@@ -106,7 +107,7 @@ public sealed class VisualHomeSectionsController : ControllerBase
             return NotFound();
         }
 
-        var user = GetCurrentUser();
+        var user = GetCurrentUser(userId);
         if (user is null)
         {
             return Unauthorized();
@@ -162,9 +163,26 @@ public sealed class VisualHomeSectionsController : ControllerBase
         return Content(reader.ReadToEnd(), asset.ContentType);
     }
 
-    private Jellyfin.Database.Implementations.Entities.User? GetCurrentUser()
+    private Jellyfin.Database.Implementations.Entities.User? GetCurrentUser(string? requestedUserId = null)
     {
         var userId = GetUserId(User);
+        if (userId == Guid.Empty && Guid.TryParse(requestedUserId, out var queryUserId))
+        {
+            userId = queryUserId;
+        }
+
+        if (userId == Guid.Empty && Request.Headers.TryGetValue("X-Emby-UserId", out var embyUserId)
+            && Guid.TryParse(embyUserId.ToString(), out var headerUserId))
+        {
+            userId = headerUserId;
+        }
+
+        if (userId == Guid.Empty && Request.Headers.TryGetValue("X-MediaBrowser-UserId", out var mediaBrowserUserId)
+            && Guid.TryParse(mediaBrowserUserId.ToString(), out var mediaHeaderUserId))
+        {
+            userId = mediaHeaderUserId;
+        }
+
         return userId == Guid.Empty ? null : _userManager.GetUserById(userId);
     }
 

@@ -128,17 +128,18 @@
             <param name="sectionQueryService">Section query service.</param>
             <param name="logger">Logger.</param>
         </member>
-        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeSectionsController.GetActiveSections">
+        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeSectionsController.GetActiveSections(System.String)">
             <summary>
             Gets active renderable sections for the current user.
             </summary>
             <returns>Renderable sections.</returns>
         </member>
-        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeSectionsController.GetSection(System.String)">
+        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeSectionsController.GetSection(System.String,System.String)">
             <summary>
             Gets one section by id.
             </summary>
             <param name="sectionId">Section id.</param>
+            <param name="userId">Optional current user id fallback.</param>
             <returns>Renderable section.</returns>
         </member>
         <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeSectionsController.GetClientConfig">

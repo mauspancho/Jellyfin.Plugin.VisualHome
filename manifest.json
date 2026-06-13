@@ -8,11 +8,11 @@
     "owner": "mauspancho",
     "versions": [
       {
-        "version": "0.1.0.4",
-        "changelog": "Harden Jellyfin Web injection by avoiding compressed HTML responses and adding injection diagnostics.",
+        "version": "0.1.0.5",
+        "changelog": "Make the frontend wait for Jellyfin ApiClient, pass the current user id to section endpoints, and show visible diagnostics when rendering fails.",
         "targetAbi": "10.11.0.0",
-        "sourceUrl": "https://raw.githubusercontent.com/mauspancho/Jellyfin.Plugin.VisualHome/main/Jellyfin.Plugin.VisualHome_0.1.0.4.zip",
-        "checksum": "35bb0fe52870d724e83b5a43ab8c312d"
+        "sourceUrl": "https://raw.githubusercontent.com/mauspancho/Jellyfin.Plugin.VisualHome/main/Jellyfin.Plugin.VisualHome_0.1.0.5.zip",
+        "checksum": "65b16e918b0d944fd69aaf741c57c962"
       }
     ]
   }

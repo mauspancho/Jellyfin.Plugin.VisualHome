@@ -207,6 +207,16 @@
     color: var(--vh-text);
 }
 
+.vh-diagnostic {
+    margin: 1rem clamp(1rem, 4vw, 3rem);
+    border: 1px solid rgba(0, 164, 220, .35);
+    border-radius: 8px;
+    padding: .85rem 1rem;
+    background: rgba(0, 164, 220, .12);
+    color: #eaf8ff;
+    font-size: .95rem;
+}
+
 @media (max-width: 720px) {
     .vh-home {
         padding: 0 .85rem;

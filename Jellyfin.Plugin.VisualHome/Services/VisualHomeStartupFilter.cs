@@ -136,8 +136,8 @@ public sealed class VisualHomeInjectionMiddleware
         }
 
         var basePath = pathBase.HasValue ? pathBase.Value : string.Empty;
-        var cssUrl = $"{basePath}/VisualHome/assets/visualhome.css?v=0.1.0.4";
-        var jsUrl = $"{basePath}/VisualHome/assets/visualhome.js?v=0.1.0.4";
+        var cssUrl = $"{basePath}/VisualHome/assets/visualhome.css?v=0.1.0.5";
+        var jsUrl = $"{basePath}/VisualHome/assets/visualhome.js?v=0.1.0.5";
         var tags = $"""
             <link rel="stylesheet" href="{cssUrl}" data-vh-css="true">
             <script src="{jsUrl}" defer data-vh-main="true"></script>
