@@ -12,7 +12,7 @@
         "changelog": "Initial lightweight Visual Home implementation.",
         "targetAbi": "10.11.0.0",
         "sourceUrl": "https://raw.githubusercontent.com/mauspancho/Jellyfin.Plugin.VisualHome/main/Jellyfin.Plugin.VisualHome_0.1.0.0.zip",
-        "checksum": ""
+        "checksum": "9245fae5a65163b8a7768f00e6a3a054"
       }
     ]
   }
