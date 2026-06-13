@@ -120,6 +120,12 @@
                         <button id="vhTestNow" is="emby-button" type="button" class="raised emby-button">
                             <span>Probar en esta sesion</span>
                         </button>
+                        <button id="vhInstallWeb" is="emby-button" type="button" class="raised emby-button">
+                            <span>Instalar JS en Jellyfin Web</span>
+                        </button>
+                        <button id="vhRestoreWeb" is="emby-button" type="button" class="raised emby-button">
+                            <span>Restaurar Jellyfin Web</span>
+                        </button>
                         <button id="vhInstallCss" is="emby-button" type="button" class="raised emby-button">
                             <span>Instalar CSS visual</span>
                         </button>
@@ -140,7 +146,7 @@
                         Loader persistente: /VisualHome/assets/visualhome-loader.user.js
                     </div>
                     <div class="fieldDescription" style="margin-top:.75em;">
-                        Si JavaScript no se inyecta en tu instalacion, usa "Instalar CSS visual". Agrega un @import al Custom CSS oficial de Jellyfin sin modificar archivos core.
+                        Para agregar hero/carruseles reales usa "Instalar JS en Jellyfin Web". Agrega un bloque marcado a index.html y puede revertirse con "Restaurar Jellyfin Web".
                     </div>
                     <div id="vhStatusMessage" class="fieldDescription" style="margin-top:1em;"></div>
                 </form>
@@ -342,6 +348,24 @@
 
                     showStatus('Loader insertado en esta sesion. Abriendo Home...');
                     window.location.hash = '#!/home.html';
+                });
+
+                document.querySelector('#vhInstallWeb').addEventListener('click', function () {
+                    Dashboard.showLoadingMsg();
+                    showStatus('');
+                    api('VisualHome/config/install-web', 'POST').then(function (result) {
+                        showStatus('JS instalado en Jellyfin Web. Reinicia Jellyfin o recarga el navegador sin cache. index: ' + (result.IndexPath || result.indexPath || 'ok'));
+                        finishLoading();
+                    }).catch(error => fail(error, 'No se pudo instalar JS en Jellyfin Web. Revisa permisos de escritura sobre index.html.'));
+                });
+
+                document.querySelector('#vhRestoreWeb').addEventListener('click', function () {
+                    Dashboard.showLoadingMsg();
+                    showStatus('');
+                    api('VisualHome/config/restore-web', 'POST').then(function () {
+                        showStatus('Bloque Visual Home removido de Jellyfin Web.');
+                        finishLoading();
+                    }).catch(error => fail(error, 'No se pudo restaurar Jellyfin Web.'));
                 });
 
                 document.querySelector('#vhInstallCss').addEventListener('click', function () {

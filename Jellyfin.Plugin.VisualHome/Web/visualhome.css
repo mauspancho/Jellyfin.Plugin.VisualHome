@@ -30,27 +30,6 @@
     letter-spacing: 0 !important;
 }
 
-.homeSectionsContainer .verticalSection:first-of-type,
-.homeSectionsContainer .section0 {
-    position: relative;
-    overflow: hidden;
-    min-height: clamp(16rem, 32vw, 28rem);
-    margin: 1rem 0 1.5rem !important;
-    border-radius: 8px;
-    background: linear-gradient(90deg, #0b0d12, #17202b) !important;
-    box-shadow: 0 18px 42px rgba(0, 0, 0, .32);
-}
-
-.homeSectionsContainer .verticalSection:first-of-type .itemsContainer,
-.homeSectionsContainer .section0 .itemsContainer {
-    padding: 1rem !important;
-}
-
-.homeSectionsContainer .verticalSection:first-of-type .card:first-of-type,
-.homeSectionsContainer .section0 .card:first-of-type {
-    transform: scale(1.03);
-}
-
 .homeSectionsContainer .card,
 .homeSectionsContainer .cardBox,
 .homeSectionsContainer .cardScalable {

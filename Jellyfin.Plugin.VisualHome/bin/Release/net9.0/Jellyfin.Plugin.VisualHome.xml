@@ -127,6 +127,18 @@
             </summary>
             <returns>Status payload.</returns>
         </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeConfigController.InstallWebInjection">
+            <summary>
+            Installs the Visual Home script tags into Jellyfin Web index.html.
+            </summary>
+            <returns>Status payload.</returns>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeConfigController.RestoreWebInjection">
+            <summary>
+            Removes the Visual Home script tags from Jellyfin Web index.html.
+            </summary>
+            <returns>Status payload.</returns>
+        </member>
         <member name="T:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeSectionsController">
             <summary>
             Read endpoints and web assets for Visual Home.

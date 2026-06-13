@@ -257,6 +257,70 @@ public sealed class VisualHomeConfigController : ControllerBase
         return new { Removed = true };
     }
 
+    /// <summary>
+    /// Installs the Visual Home script tags into Jellyfin Web index.html.
+    /// </summary>
+    /// <returns>Status payload.</returns>
+    [HttpPost("install-web")]
+    public ActionResult<object> InstallWebInjection()
+    {
+        if (!IsAdmin())
+        {
+            return Forbid();
+        }
+
+        var indexPath = GetWebIndexPath();
+        if (!System.IO.File.Exists(indexPath))
+        {
+            return BadRequest(new { Error = "Jellyfin Web index.html was not found.", IndexPath = indexPath });
+        }
+
+        var html = System.IO.File.ReadAllText(indexPath);
+        var cleaned = RemoveWebInjectionBlock(html);
+        if (!cleaned.Contains("</body>", StringComparison.OrdinalIgnoreCase))
+        {
+            return BadRequest(new { Error = "Jellyfin Web index.html does not contain a closing body tag.", IndexPath = indexPath });
+        }
+
+        var backupPath = GetWebIndexBackupPath();
+        if (!System.IO.File.Exists(backupPath))
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(backupPath)!);
+            System.IO.File.WriteAllText(backupPath, html);
+        }
+
+        var injected = cleaned.Replace("</body>", GetWebInjectionBlock() + Environment.NewLine + "</body>", StringComparison.OrdinalIgnoreCase);
+        System.IO.File.WriteAllText(indexPath, injected);
+
+        _logger.LogInformation("[VisualHome] Installed Jellyfin Web index injection at {IndexPath}", indexPath);
+        return new { Installed = true, IndexPath = indexPath, BackupPath = backupPath };
+    }
+
+    /// <summary>
+    /// Removes the Visual Home script tags from Jellyfin Web index.html.
+    /// </summary>
+    /// <returns>Status payload.</returns>
+    [HttpPost("restore-web")]
+    public ActionResult<object> RestoreWebInjection()
+    {
+        if (!IsAdmin())
+        {
+            return Forbid();
+        }
+
+        var indexPath = GetWebIndexPath();
+        if (!System.IO.File.Exists(indexPath))
+        {
+            return BadRequest(new { Error = "Jellyfin Web index.html was not found.", IndexPath = indexPath });
+        }
+
+        var html = System.IO.File.ReadAllText(indexPath);
+        System.IO.File.WriteAllText(indexPath, RemoveWebInjectionBlock(html));
+
+        _logger.LogInformation("[VisualHome] Removed Jellyfin Web index injection at {IndexPath}", indexPath);
+        return new { Removed = true, IndexPath = indexPath };
+    }
+
     private bool IsAdmin()
     {
         var userId = GetUserId(User);
@@ -328,6 +392,47 @@ public sealed class VisualHomeConfigController : ControllerBase
 
     private static string GetCssImport()
     {
-        return "@import url('/VisualHome/assets/visualhome.css?v=0.1.0.8');";
+        return "@import url('/VisualHome/assets/visualhome.css?v=0.1.0.9');";
+    }
+
+    private string GetWebIndexPath()
+    {
+        return Path.Combine(_serverConfigurationManager.ApplicationPaths.WebPath, "index.html");
+    }
+
+    private string GetWebIndexBackupPath()
+    {
+        return Path.Combine(_serverConfigurationManager.ApplicationPaths.PluginConfigurationsPath, "visualhome.index.html.bak");
+    }
+
+    private static string GetWebInjectionBlock()
+    {
+        return """
+            <!-- VisualHome:start -->
+            <link rel="stylesheet" href="/VisualHome/assets/visualhome.css?v=0.1.0.9" data-vh-css="true">
+            <script src="/VisualHome/assets/visualhome.js?v=0.1.0.9" defer data-vh-main="true"></script>
+            <!-- VisualHome:end -->
+            """;
+    }
+
+    private static string RemoveWebInjectionBlock(string html)
+    {
+        const string start = "<!-- VisualHome:start -->";
+        const string end = "<!-- VisualHome:end -->";
+
+        var startIndex = html.IndexOf(start, StringComparison.OrdinalIgnoreCase);
+        if (startIndex < 0)
+        {
+            return html;
+        }
+
+        var endIndex = html.IndexOf(end, startIndex, StringComparison.OrdinalIgnoreCase);
+        if (endIndex < 0)
+        {
+            return html;
+        }
+
+        endIndex += end.Length;
+        return html.Remove(startIndex, endIndex - startIndex).TrimEnd();
     }
 }
