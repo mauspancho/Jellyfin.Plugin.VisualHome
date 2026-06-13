@@ -10,6 +10,73 @@
     padding: 0 clamp(1rem, 4vw, 3rem);
 }
 
+/* CSS-only integration for Jellyfin Custom CSS. These selectors intentionally
+   target Jellyfin Web's native Home markup so the plugin still changes the
+   visual layer even when JavaScript injection is unavailable. */
+.homePage,
+.homePage .page,
+.homePage .pageContent,
+.homeSectionsContainer {
+    background: #0b0d12 !important;
+}
+
+.homeSectionsContainer {
+    padding: 1rem clamp(1rem, 4vw, 3rem) 3rem !important;
+}
+
+.homeSectionsContainer .sectionTitle,
+.homeSectionsContainer h2 {
+    color: #f5f7fb !important;
+    letter-spacing: 0 !important;
+}
+
+.homeSectionsContainer .verticalSection:first-of-type,
+.homeSectionsContainer .section0 {
+    position: relative;
+    overflow: hidden;
+    min-height: clamp(16rem, 32vw, 28rem);
+    margin: 1rem 0 1.5rem !important;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #0b0d12, #17202b) !important;
+    box-shadow: 0 18px 42px rgba(0, 0, 0, .32);
+}
+
+.homeSectionsContainer .verticalSection:first-of-type .itemsContainer,
+.homeSectionsContainer .section0 .itemsContainer {
+    padding: 1rem !important;
+}
+
+.homeSectionsContainer .verticalSection:first-of-type .card:first-of-type,
+.homeSectionsContainer .section0 .card:first-of-type {
+    transform: scale(1.03);
+}
+
+.homeSectionsContainer .card,
+.homeSectionsContainer .cardBox,
+.homeSectionsContainer .cardScalable {
+    border-radius: 8px !important;
+}
+
+.homeSectionsContainer .cardImage,
+.homeSectionsContainer .cardImageContainer,
+.homeSectionsContainer .coveredImage,
+.homeSectionsContainer .cardPadder {
+    border-radius: 8px !important;
+    overflow: hidden !important;
+}
+
+.homeSectionsContainer .card:hover .cardImageContainer,
+.homeSectionsContainer .card:hover .cardImage {
+    transform: translateY(-4px);
+    transition: transform .16s ease, box-shadow .16s ease;
+    box-shadow: 0 18px 34px rgba(0, 0, 0, .38);
+}
+
+.homeSectionsContainer .emby-scroller,
+.homeSectionsContainer .itemsContainer {
+    scrollbar-color: rgba(255,255,255,.24) transparent;
+}
+
 .vh-hero {
     position: relative;
     min-height: clamp(20rem, 46vw, 34rem);

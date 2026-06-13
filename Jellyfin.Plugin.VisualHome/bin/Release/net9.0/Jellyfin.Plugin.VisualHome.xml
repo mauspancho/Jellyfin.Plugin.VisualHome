@@ -56,12 +56,13 @@
             Administrative endpoints for Visual Home.
             </summary>
         </member>
-        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeConfigController.#ctor(MediaBrowser.Controller.Library.ILibraryManager,MediaBrowser.Controller.Library.IUserManager,Jellyfin.Plugin.VisualHome.Services.SectionCacheService,Microsoft.Extensions.Logging.ILogger{Jellyfin.Plugin.VisualHome.Controllers.VisualHomeConfigController})">
+        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeConfigController.#ctor(MediaBrowser.Controller.Library.ILibraryManager,MediaBrowser.Controller.Library.IUserManager,MediaBrowser.Controller.Configuration.IServerConfigurationManager,Jellyfin.Plugin.VisualHome.Services.SectionCacheService,Microsoft.Extensions.Logging.ILogger{Jellyfin.Plugin.VisualHome.Controllers.VisualHomeConfigController})">
             <summary>
             Initializes a new instance of the <see cref="T:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeConfigController"/> class.
             </summary>
             <param name="libraryManager">Library manager.</param>
             <param name="userManager">User manager.</param>
+            <param name="serverConfigurationManager">Server configuration manager.</param>
             <param name="cacheService">Cache service.</param>
             <param name="logger">Logger.</param>
         </member>
@@ -111,6 +112,18 @@
         <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeConfigController.ClearCache">
             <summary>
             Clears Visual Home cache.
+            </summary>
+            <returns>Status payload.</returns>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeConfigController.InstallCustomCss">
+            <summary>
+            Installs the Visual Home CSS import into Jellyfin custom branding CSS.
+            </summary>
+            <returns>Status payload.</returns>
+        </member>
+        <member name="M:Jellyfin.Plugin.VisualHome.Controllers.VisualHomeConfigController.RemoveCustomCss">
+            <summary>
+            Removes the Visual Home CSS import from Jellyfin custom branding CSS.
             </summary>
             <returns>Status payload.</returns>
         </member>

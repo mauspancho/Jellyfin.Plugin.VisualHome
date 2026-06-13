@@ -8,11 +8,11 @@
     "owner": "mauspancho",
     "versions": [
       {
-        "version": "0.1.0.6",
-        "changelog": "Fix frontend casing compatibility for Jellyfin JSON responses so enabled configuration and sections render correctly.",
+        "version": "0.1.0.8",
+        "changelog": "Add Custom CSS installer/remover and CSS-only Home styling fallback for Jellyfin installations where JavaScript injection is unavailable.",
         "targetAbi": "10.11.0.0",
-        "sourceUrl": "https://raw.githubusercontent.com/mauspancho/Jellyfin.Plugin.VisualHome/main/Jellyfin.Plugin.VisualHome_0.1.0.6.zip",
-        "checksum": "9e1e826b989cb55b3291bf534cdf82d3"
+        "sourceUrl": "https://raw.githubusercontent.com/mauspancho/Jellyfin.Plugin.VisualHome/main/Jellyfin.Plugin.VisualHome_0.1.0.8.zip",
+        "checksum": "a2747e8490f5850df55f087b43e48fc8"
       }
     ]
   }

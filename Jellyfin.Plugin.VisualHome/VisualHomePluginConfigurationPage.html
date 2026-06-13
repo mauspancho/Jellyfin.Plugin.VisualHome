@@ -120,6 +120,12 @@
                         <button id="vhTestNow" is="emby-button" type="button" class="raised emby-button">
                             <span>Probar en esta sesion</span>
                         </button>
+                        <button id="vhInstallCss" is="emby-button" type="button" class="raised emby-button">
+                            <span>Instalar CSS visual</span>
+                        </button>
+                        <button id="vhRemoveCss" is="emby-button" type="button" class="raised emby-button">
+                            <span>Quitar CSS visual</span>
+                        </button>
                         <button id="vhRestoreDefaults" is="emby-button" type="button" class="raised emby-button">
                             <span>Restaurar secciones predeterminadas</span>
                         </button>
@@ -134,7 +140,7 @@
                         Loader persistente: /VisualHome/assets/visualhome-loader.user.js
                     </div>
                     <div class="fieldDescription" style="margin-top:.75em;">
-                        Jellyfin Web no carga JavaScript de plugins de servidor automaticamente. Usa "Probar en esta sesion" para validar la vista actual o instala el loader persistente en Tampermonkey/Violentmonkey.
+                        Si JavaScript no se inyecta en tu instalacion, usa "Instalar CSS visual". Agrega un @import al Custom CSS oficial de Jellyfin sin modificar archivos core.
                     </div>
                     <div id="vhStatusMessage" class="fieldDescription" style="margin-top:1em;"></div>
                 </form>
@@ -336,6 +342,24 @@
 
                     showStatus('Loader insertado en esta sesion. Abriendo Home...');
                     window.location.hash = '#!/home.html';
+                });
+
+                document.querySelector('#vhInstallCss').addEventListener('click', function () {
+                    Dashboard.showLoadingMsg();
+                    showStatus('');
+                    api('VisualHome/config/install-css', 'POST').then(function () {
+                        showStatus('CSS visual instalado en el Custom CSS de Jellyfin. Recarga Jellyfin Web o abre Home en incognito.');
+                        finishLoading();
+                    }).catch(error => fail(error, 'No se pudo instalar el CSS visual.'));
+                });
+
+                document.querySelector('#vhRemoveCss').addEventListener('click', function () {
+                    Dashboard.showLoadingMsg();
+                    showStatus('');
+                    api('VisualHome/config/remove-css', 'POST').then(function () {
+                        showStatus('CSS visual removido del Custom CSS de Jellyfin.');
+                        finishLoading();
+                    }).catch(error => fail(error, 'No se pudo quitar el CSS visual.'));
                 });
 
                 document.querySelector('#vhRestoreDefaults').addEventListener('click', function () {

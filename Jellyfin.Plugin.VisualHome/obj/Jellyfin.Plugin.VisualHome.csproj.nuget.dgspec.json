@@ -5,7 +5,7 @@
   },
   "projects": {
     "C:\\Users\\mausp\\ownCloud\\plugin Jellyfin\\Jellyfin.Plugin.VisualHome\\Jellyfin.Plugin.VisualHome.csproj": {
-      "version": "0.1.0.6",
+      "version": "0.1.0.8",
       "restore": {
         "projectUniqueName": "C:\\Users\\mausp\\ownCloud\\plugin Jellyfin\\Jellyfin.Plugin.VisualHome\\Jellyfin.Plugin.VisualHome.csproj",
         "projectName": "Jellyfin.Plugin.VisualHome",

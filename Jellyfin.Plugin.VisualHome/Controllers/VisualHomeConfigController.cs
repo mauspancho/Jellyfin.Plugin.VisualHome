@@ -3,8 +3,11 @@ using System.Security.Claims;
 using Jellyfin.Plugin.VisualHome.Configuration;
 using Jellyfin.Plugin.VisualHome.Models;
 using Jellyfin.Plugin.VisualHome.Services;
+using MediaBrowser.Common.Configuration;
+using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
+using MediaBrowser.Model.Branding;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -21,6 +24,7 @@ public sealed class VisualHomeConfigController : ControllerBase
 {
     private readonly ILibraryManager _libraryManager;
     private readonly IUserManager _userManager;
+    private readonly IServerConfigurationManager _serverConfigurationManager;
     private readonly SectionCacheService _cacheService;
     private readonly ILogger<VisualHomeConfigController> _logger;
 
@@ -29,16 +33,19 @@ public sealed class VisualHomeConfigController : ControllerBase
     /// </summary>
     /// <param name="libraryManager">Library manager.</param>
     /// <param name="userManager">User manager.</param>
+    /// <param name="serverConfigurationManager">Server configuration manager.</param>
     /// <param name="cacheService">Cache service.</param>
     /// <param name="logger">Logger.</param>
     public VisualHomeConfigController(
         ILibraryManager libraryManager,
         IUserManager userManager,
+        IServerConfigurationManager serverConfigurationManager,
         SectionCacheService cacheService,
         ILogger<VisualHomeConfigController> logger)
     {
         _libraryManager = libraryManager;
         _userManager = userManager;
+        _serverConfigurationManager = serverConfigurationManager;
         _cacheService = cacheService;
         _logger = logger;
     }
@@ -201,6 +208,55 @@ public sealed class VisualHomeConfigController : ControllerBase
         return new { Cleared = true };
     }
 
+    /// <summary>
+    /// Installs the Visual Home CSS import into Jellyfin custom branding CSS.
+    /// </summary>
+    /// <returns>Status payload.</returns>
+    [HttpPost("install-css")]
+    public ActionResult<object> InstallCustomCss()
+    {
+        if (!IsAdmin())
+        {
+            return Forbid();
+        }
+
+        var branding = _serverConfigurationManager.GetConfiguration<BrandingOptions>("branding");
+        var currentCss = branding.CustomCss ?? string.Empty;
+        var import = GetCssImport();
+        if (!currentCss.Contains(import, StringComparison.OrdinalIgnoreCase))
+        {
+            branding.CustomCss = string.IsNullOrWhiteSpace(currentCss)
+                ? import
+                : currentCss.TrimEnd() + Environment.NewLine + Environment.NewLine + import;
+            _serverConfigurationManager.SaveConfiguration("branding", branding);
+        }
+
+        _logger.LogInformation("[VisualHome] Installed Visual Home CSS import into Jellyfin branding CSS");
+        return new { Installed = true, Import = import };
+    }
+
+    /// <summary>
+    /// Removes the Visual Home CSS import from Jellyfin custom branding CSS.
+    /// </summary>
+    /// <returns>Status payload.</returns>
+    [HttpPost("remove-css")]
+    public ActionResult<object> RemoveCustomCss()
+    {
+        if (!IsAdmin())
+        {
+            return Forbid();
+        }
+
+        var branding = _serverConfigurationManager.GetConfiguration<BrandingOptions>("branding");
+        var currentCss = branding.CustomCss ?? string.Empty;
+        var import = GetCssImport();
+        branding.CustomCss = currentCss.Replace(import, string.Empty, StringComparison.OrdinalIgnoreCase).Trim();
+        _serverConfigurationManager.SaveConfiguration("branding", branding);
+
+        _logger.LogInformation("[VisualHome] Removed Visual Home CSS import from Jellyfin branding CSS");
+        return new { Removed = true };
+    }
+
     private bool IsAdmin()
     {
         var userId = GetUserId(User);
@@ -268,5 +324,10 @@ public sealed class VisualHomeConfigController : ControllerBase
     {
         var property = value.GetType().GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public);
         return property?.GetValue(value)?.ToString();
+    }
+
+    private static string GetCssImport()
+    {
+        return "@import url('/VisualHome/assets/visualhome.css?v=0.1.0.8');";
     }
 }

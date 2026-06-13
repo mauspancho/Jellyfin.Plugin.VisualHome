@@ -313,7 +313,10 @@
     function renderSections(sections, clientConfig) {
         const host = findHomeHost();
         removeRoot();
-        const normalizedSections = (sections || []).map(normalizeSection).sort((a, b) => a.position - b.position);
+        let normalizedSections = (sections || []).map(normalizeSection).sort((a, b) => a.position - b.position);
+        if (!normalizedSections.some(section => section.items && section.items.length > 0)) {
+            normalizedSections = buildNativeFallbackSections();
+        }
 
         const root = document.createElement('div');
         root.id = rootId;
@@ -344,6 +347,83 @@
         } else {
             renderDiagnostic('Visual Home cargo, pero no recibio secciones con items. Revisa /VisualHome/sections y los logs [VisualHome].');
         }
+    }
+
+    function buildNativeFallbackSections() {
+        const cards = Array.from(document.querySelectorAll('.card, .cardBox, .posterCard, .overflowBackdropCard, [data-id]'))
+            .filter(card => !card.closest('#' + rootId) && !card.closest('#' + diagnosticId));
+
+        const seen = new Set();
+        const items = [];
+
+        cards.forEach(card => {
+            const link = card.closest('a') || card.querySelector('a');
+            const url = link ? (link.getAttribute('href') || '') : '';
+            const id = card.getAttribute('data-id') || url || card.textContent || String(items.length);
+            if (seen.has(id)) {
+                return;
+            }
+
+            const img = card.querySelector('img');
+            const image = img && img.src ? img.src : extractBackground(card);
+            const nameNode = card.querySelector('.cardText, .cardText-first, .cardName, .itemName, .textActionButton')
+                || card.querySelector('[title]')
+                || card;
+            const name = (nameNode.getAttribute && nameNode.getAttribute('title')) || (nameNode.textContent || '').trim();
+
+            if (!name && !image) {
+                return;
+            }
+
+            seen.add(id);
+            items.push({
+                id: id,
+                name: name || 'Jellyfin',
+                url: url,
+                overview: '',
+                productionYear: null,
+                officialRating: '',
+                imagePrimaryUrl: image,
+                imageBackdropUrl: image,
+                genres: []
+            });
+        });
+
+        if (items.length === 0) {
+            return [];
+        }
+
+        return [
+            {
+                sectionId: 'native-hero',
+                name: 'Destacado',
+                visualType: 'hero',
+                position: 0,
+                success: true,
+                items: [items[0]]
+            },
+            {
+                sectionId: 'native-home',
+                name: 'En tu Jellyfin',
+                visualType: 'carousel',
+                position: 10,
+                success: true,
+                items: items.slice(0, 24)
+            }
+        ];
+    }
+
+    function extractBackground(element) {
+        const candidates = [element].concat(Array.from(element.querySelectorAll('*')).slice(0, 8));
+        for (const candidate of candidates) {
+            const background = window.getComputedStyle(candidate).backgroundImage || '';
+            const match = background.match(/url\(["']?(.*?)["']?\)/);
+            if (match && match[1]) {
+                return match[1];
+            }
+        }
+
+        return '';
     }
 
     function scheduleRender() {
