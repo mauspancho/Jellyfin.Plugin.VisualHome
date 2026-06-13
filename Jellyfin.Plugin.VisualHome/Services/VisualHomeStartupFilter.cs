@@ -56,6 +56,8 @@ public sealed class VisualHomeInjectionMiddleware
         }
 
         var originalBody = context.Response.Body;
+        var originalAcceptEncoding = context.Request.Headers.AcceptEncoding.ToString();
+        context.Request.Headers.AcceptEncoding = string.Empty;
         await using var buffer = new MemoryStream();
         context.Response.Body = buffer;
 
@@ -77,7 +79,14 @@ public sealed class VisualHomeInjectionMiddleware
 
             context.Response.Body = originalBody;
             context.Response.ContentLength = bytes.Length;
+            context.Response.Headers.Remove("ETag");
+            context.Response.Headers.Remove("Content-MD5");
             await context.Response.Body.WriteAsync(bytes).ConfigureAwait(false);
+
+            if (!ReferenceEquals(html, injected))
+            {
+                _logger.LogInformation("[VisualHome] Injected frontend assets into Jellyfin Web HTML");
+            }
         }
         catch (Exception ex)
         {
@@ -88,6 +97,7 @@ public sealed class VisualHomeInjectionMiddleware
         }
         finally
         {
+            context.Request.Headers.AcceptEncoding = originalAcceptEncoding;
             context.Response.Body = originalBody;
         }
     }
@@ -126,8 +136,8 @@ public sealed class VisualHomeInjectionMiddleware
         }
 
         var basePath = pathBase.HasValue ? pathBase.Value : string.Empty;
-        var cssUrl = $"{basePath}/VisualHome/assets/visualhome.css?v=0.1.0.3";
-        var jsUrl = $"{basePath}/VisualHome/assets/visualhome.js?v=0.1.0.3";
+        var cssUrl = $"{basePath}/VisualHome/assets/visualhome.css?v=0.1.0.4";
+        var jsUrl = $"{basePath}/VisualHome/assets/visualhome.js?v=0.1.0.4";
         var tags = $"""
             <link rel="stylesheet" href="{cssUrl}" data-vh-css="true">
             <script src="{jsUrl}" defer data-vh-main="true"></script>

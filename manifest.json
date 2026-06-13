@@ -8,11 +8,11 @@
     "owner": "mauspancho",
     "versions": [
       {
-        "version": "0.1.0.3",
-        "changelog": "Add non-destructive Jellyfin Web HTML response injection middleware so Visual Home loads automatically without patching index.html.",
+        "version": "0.1.0.4",
+        "changelog": "Harden Jellyfin Web injection by avoiding compressed HTML responses and adding injection diagnostics.",
         "targetAbi": "10.11.0.0",
-        "sourceUrl": "https://raw.githubusercontent.com/mauspancho/Jellyfin.Plugin.VisualHome/main/Jellyfin.Plugin.VisualHome_0.1.0.3.zip",
-        "checksum": "95d5508ea138c11cd01a195022b29e73"
+        "sourceUrl": "https://raw.githubusercontent.com/mauspancho/Jellyfin.Plugin.VisualHome/main/Jellyfin.Plugin.VisualHome_0.1.0.4.zip",
+        "checksum": "35bb0fe52870d724e83b5a43ab8c312d"
       }
     ]
   }
