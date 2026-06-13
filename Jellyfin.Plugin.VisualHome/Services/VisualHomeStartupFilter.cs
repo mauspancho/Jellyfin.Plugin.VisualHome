@@ -28,6 +28,7 @@ public sealed class VisualHomeStartupFilter : IStartupFilter
 public sealed class VisualHomeInjectionMiddleware
 {
     private const string ScriptMarker = "data-vh-main";
+    private const string PluginVersion = "0.1.0.10";
     private readonly RequestDelegate _next;
     private readonly ILogger<VisualHomeInjectionMiddleware> _logger;
 
@@ -135,13 +136,34 @@ public sealed class VisualHomeInjectionMiddleware
             return html;
         }
 
-        var basePath = pathBase.HasValue ? pathBase.Value : string.Empty;
-        var cssUrl = $"{basePath}/VisualHome/assets/visualhome.css?v=0.1.0.9";
-        var jsUrl = $"{basePath}/VisualHome/assets/visualhome.js?v=0.1.0.9";
-        var tags = $"""
-            <link rel="stylesheet" href="{cssUrl}" data-vh-css="true">
-            <script src="{jsUrl}" defer data-vh-main="true"></script>
-            """;
+        var tags = """
+            <script data-vh-loader="true">
+            (function () {
+                if (document.querySelector('script[data-vh-main]')) {
+                    return;
+                }
+
+                var path = location.pathname || '';
+                var webIndex = path.toLowerCase().indexOf('/web');
+                var basePath = webIndex >= 0 ? path.slice(0, webIndex) : '';
+                var assetBase = basePath + '/VisualHome/assets/';
+
+                if (!document.querySelector('link[data-vh-css]')) {
+                    var link = document.createElement('link');
+                    link.rel = 'stylesheet';
+                    link.href = assetBase + 'visualhome.css?v=__VISUAL_HOME_VERSION__';
+                    link.dataset.vhCss = 'true';
+                    document.head.appendChild(link);
+                }
+
+                var script = document.createElement('script');
+                script.src = assetBase + 'visualhome.js?v=__VISUAL_HOME_VERSION__';
+                script.defer = true;
+                script.dataset.vhMain = 'true';
+                document.documentElement.appendChild(script);
+            })();
+            </script>
+            """.Replace("__VISUAL_HOME_VERSION__", PluginVersion, StringComparison.Ordinal);
 
         return html.Replace("</body>", tags + Environment.NewLine + "</body>", StringComparison.OrdinalIgnoreCase);
     }

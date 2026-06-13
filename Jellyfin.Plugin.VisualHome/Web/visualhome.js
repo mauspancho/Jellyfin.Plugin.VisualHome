@@ -5,7 +5,7 @@
         rendering: false,
         lastPath: '',
         observer: null,
-        apiWaits: 0
+        renderAttempts: 0
     };
 
     const rootId = 'vh-home-root';
@@ -72,13 +72,38 @@
         return basePath + '/' + path.replace(/^\/+/, '');
     }
 
+    function assetUrl(url) {
+        if (!url) {
+            return '';
+        }
+
+        if (/^(https?:)?\/\//i.test(url) || url.startsWith('data:') || url.startsWith('blob:')) {
+            return url;
+        }
+
+        if (url.startsWith('/')) {
+            return pluginUrl(url.slice(1));
+        }
+
+        return url;
+    }
+
     function api(path) {
         const url = pluginUrl(path);
         if (window.ApiClient && ApiClient.ajax) {
             return ApiClient.ajax({ type: 'GET', url: url, dataType: 'json' });
         }
 
-        return fetch(url, { credentials: 'same-origin' }).then(response => response.json());
+        return fetch(url, {
+            credentials: 'same-origin',
+            headers: { accept: 'application/json' }
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error('HTTP ' + response.status + ' ' + url);
+            }
+
+            return response.json();
+        });
     }
 
     function currentUserId() {
@@ -166,7 +191,7 @@
     }
 
     function itemImage(url) {
-        return url ? url : '';
+        return assetUrl(url);
     }
 
     function openItem(item) {
@@ -205,7 +230,7 @@
 
         const meta = document.createElement('div');
         meta.className = 'vh-meta';
-        meta.textContent = [item.productionYear, item.officialRating, (item.genres || []).slice(0, 3).join(' · ')].filter(Boolean).join(' · ');
+        meta.textContent = [item.productionYear, item.officialRating, (item.genres || []).slice(0, 3).join(' / ')].filter(Boolean).join(' / ');
 
         const overview = document.createElement('p');
         overview.className = 'vh-overview';
@@ -344,8 +369,10 @@
 
         if (root.childElementCount > 0) {
             host.prepend(root);
+            document.documentElement.classList.add('vh-js-ready');
         } else {
-            renderDiagnostic('Visual Home cargo, pero no recibio secciones con items. Revisa /VisualHome/sections y los logs [VisualHome].');
+            document.documentElement.classList.remove('vh-js-ready');
+            renderDiagnostic('Visual Home cargo, pero no encontro items para pintar todavia.');
         }
     }
 
@@ -365,7 +392,7 @@
             }
 
             const img = card.querySelector('img');
-            const image = img && img.src ? img.src : extractBackground(card);
+            const image = img && (img.currentSrc || img.src) ? (img.currentSrc || img.src) : extractBackground(card);
             const nameNode = card.querySelector('.cardText, .cardText-first, .cardName, .itemName, .textActionButton')
                 || card.querySelector('[title]')
                 || card;
@@ -443,18 +470,6 @@
             return;
         }
 
-        if (!window.ApiClient || !ApiClient.ajax) {
-            if (state.apiWaits < 40) {
-                state.apiWaits += 1;
-                window.setTimeout(scheduleRender, 250);
-                return;
-            }
-
-            renderDiagnostic('Visual Home no pudo encontrar ApiClient de Jellyfin Web.');
-            return;
-        }
-
-        state.apiWaits = 0;
         state.rendering = true;
         ensureStylesheet();
 
@@ -472,7 +487,19 @@
             renderSections(sections || [], normalizedConfig);
         }).catch(error => {
             console.warn('[VisualHome] frontend render failed', error);
-            renderDiagnostic('Visual Home cargo, pero fallo al consultar el backend. Revisa la consola del navegador y los logs del servidor.');
+            const fallbackSections = buildNativeFallbackSections();
+            if (fallbackSections.length > 0) {
+                renderSections(fallbackSections, { sidebarEnabled: false });
+                return;
+            }
+
+            state.renderAttempts += 1;
+            if (state.renderAttempts < 30) {
+                window.setTimeout(scheduleRender, 500);
+                return;
+            }
+
+            renderDiagnostic('Visual Home cargo, pero no pudo consultar el backend ni leer tarjetas nativas.');
         }).finally(() => {
             state.lastPath = path;
             state.rendering = false;

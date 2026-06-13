@@ -2,11 +2,11 @@
 
 Jellyfin Visual Home es un plugin ligero para Jellyfin Server que sirve secciones visuales para Jellyfin Web: hero principal, carruseles, top 10, recomendaciones basicas, colecciones de estudios y filas configurables.
 
-El plugin no modifica archivos de Jellyfin Web, no parchea `index.html`, no descarga binarios, no ejecuta procesos externos y no usa APIs externas. Todo sale de la biblioteca local de Jellyfin.
+El plugin usa datos locales de la biblioteca de Jellyfin. Para mostrar cambios reales en Jellyfin Web puede usar un middleware de inyeccion en memoria o, cuando eso no funciona en el servidor, un instalador reversible que agrega un loader marcado en `index.html`.
 
 ## Estado
 
-Esta es una primera version funcional y conservadora. El backend, la pagina de configuracion y los assets web estan incluidos. La carga automatica de JavaScript dentro de Jellyfin Web depende de capacidades que Jellyfin no expone de forma universal para plugins; por eso el plugin sirve `visualhome.js` y `visualhome.css`, y documenta el modo fallback no destructivo.
+Esta es una primera version funcional. El backend, la pagina de configuracion y los assets web estan incluidos. La carga automatica de JavaScript dentro de Jellyfin Web depende de capacidades que Jellyfin no expone de forma universal para plugins; por eso el plugin incluye tambien botones de instalacion/restauracion desde su configuracion.
 
 ## Estructura
 
@@ -68,7 +68,7 @@ Jellyfin.Plugin.VisualHome\bin\Release\net9.0\Jellyfin.Plugin.VisualHome.dll
 
 ## Carga en Jellyfin Web
 
-Desde `0.1.0.3`, el plugin registra un middleware de respuesta que inyecta `visualhome.css` y `visualhome.js` en el HTML de Jellyfin Web en memoria. No modifica `index.html` ni escribe dentro de `/usr/share/jellyfin/web`.
+El plugin intenta cargar `visualhome.css` y `visualhome.js` con un middleware de respuesta. Si tu instalacion de Jellyfin no permite esa inyeccion, abre la configuracion del plugin y usa `Instalar JS en Jellyfin Web`. Ese boton agrega un bloque marcado `VisualHome:start/end` en `index.html` y `Restaurar Jellyfin Web` lo elimina.
 
 El plugin sirve los assets en:
 
@@ -84,7 +84,7 @@ CSS fallback no destructivo:
 @import url("/VisualHome/assets/visualhome.css");
 ```
 
-Fallback persistente:
+Fallback de navegador:
 
 Jellyfin Web no garantiza una API estable para que un plugin de servidor inyecte JavaScript en todas las versiones sin tocar archivos core. Para activar la vista sin editar `index.html`, instala Tampermonkey o Violentmonkey en el navegador y agrega el userscript:
 
@@ -93,8 +93,6 @@ https://TU_SERVIDOR:8096/VisualHome/assets/visualhome-loader.user.js
 ```
 
 Tambien puedes abrir la pagina de configuracion del plugin y pulsar `Probar en esta sesion`. Eso inyecta el loader solo en la sesion actual del navegador.
-
-No edites ni reemplaces `index.html` del servidor.
 
 ## Pruebas manuales
 

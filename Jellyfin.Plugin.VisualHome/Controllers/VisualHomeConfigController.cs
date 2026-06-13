@@ -22,6 +22,8 @@ namespace Jellyfin.Plugin.VisualHome.Controllers;
 [Route("VisualHome/config")]
 public sealed class VisualHomeConfigController : ControllerBase
 {
+    private const string PluginVersion = "0.1.0.10";
+
     private readonly ILibraryManager _libraryManager;
     private readonly IUserManager _userManager;
     private readonly IServerConfigurationManager _serverConfigurationManager;
@@ -392,7 +394,7 @@ public sealed class VisualHomeConfigController : ControllerBase
 
     private static string GetCssImport()
     {
-        return "@import url('/VisualHome/assets/visualhome.css?v=0.1.0.9');";
+        return "@import url('/VisualHome/assets/visualhome.css?v=0.1.0.10');";
     }
 
     private string GetWebIndexPath()
@@ -409,10 +411,35 @@ public sealed class VisualHomeConfigController : ControllerBase
     {
         return """
             <!-- VisualHome:start -->
-            <link rel="stylesheet" href="/VisualHome/assets/visualhome.css?v=0.1.0.9" data-vh-css="true">
-            <script src="/VisualHome/assets/visualhome.js?v=0.1.0.9" defer data-vh-main="true"></script>
+            <script data-vh-loader="true">
+            (function () {
+                if (document.querySelector('script[data-vh-main]')) {
+                    return;
+                }
+
+                var version = '__VISUAL_HOME_VERSION__';
+                var path = location.pathname || '';
+                var webIndex = path.toLowerCase().indexOf('/web');
+                var basePath = webIndex >= 0 ? path.slice(0, webIndex) : '';
+                var assetBase = basePath + '/VisualHome/assets/';
+
+                if (!document.querySelector('link[data-vh-css]')) {
+                    var link = document.createElement('link');
+                    link.rel = 'stylesheet';
+                    link.href = assetBase + 'visualhome.css?v=' + encodeURIComponent(version);
+                    link.dataset.vhCss = 'true';
+                    document.head.appendChild(link);
+                }
+
+                var script = document.createElement('script');
+                script.src = assetBase + 'visualhome.js?v=' + encodeURIComponent(version);
+                script.defer = true;
+                script.dataset.vhMain = 'true';
+                document.documentElement.appendChild(script);
+            })();
+            </script>
             <!-- VisualHome:end -->
-            """;
+            """.Replace("__VISUAL_HOME_VERSION__", PluginVersion, StringComparison.Ordinal);
     }
 
     private static string RemoveWebInjectionBlock(string html)

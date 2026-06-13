@@ -4,15 +4,15 @@
     "guid": "3f09ff47-54d2-4d7a-bf43-cf54d17e6701",
     "name": "Jellyfin Visual Home",
     "description": "Modern visual home sections for Jellyfin Web using only local Jellyfin library data.",
-    "overview": "Adds configurable hero, carousel, top 10, studio, genre, family, horror, short movie and recommendation sections without modifying Jellyfin Web files.",
+    "overview": "Adds configurable hero, carousel, top 10, studio, genre, family, horror, short movie and recommendation sections for Jellyfin Web.",
     "owner": "mauspancho",
     "versions": [
       {
-        "version": "0.1.0.9",
-        "changelog": "Add explicit reversible Jellyfin Web index.html JavaScript installer for environments where automatic middleware injection is unavailable.",
+        "version": "0.1.0.10",
+        "changelog": "Make Visual Home render without global ApiClient, add native-card fallback, use dynamic-base inline loader, and reduce CSS-only layout changes.",
         "targetAbi": "10.11.0.0",
-        "sourceUrl": "https://raw.githubusercontent.com/mauspancho/Jellyfin.Plugin.VisualHome/main/Jellyfin.Plugin.VisualHome_0.1.0.9.zip",
-        "checksum": "64242786c3ee81a941accb0bf8eb36c0"
+        "sourceUrl": "https://raw.githubusercontent.com/mauspancho/Jellyfin.Plugin.VisualHome/main/Jellyfin.Plugin.VisualHome_0.1.0.10.zip",
+        "checksum": "ea5267da84d1f189e15e14247c01253c"
       }
     ]
   }
